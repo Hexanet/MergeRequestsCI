@@ -1,0 +1,28 @@
+<!doctype html>
+<html  ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <title>MergeRequestCI</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body ng-controller='MainCtrl as vm'>
+
+  <h1>Merge requests<h1>
+
+  <table border="1">
+    <tr>
+      <th>Date</th>
+      <th>Projet</th>
+      <th>Titre</th>
+    </tr>
+    <tr ng-repeat="mergeRequest in vm.mergeRequests">
+      <td>{{ mergeRequest.created_at }}</td>
+      <td><a href="{{ mergeRequest.project.web_url }}">{{ mergeRequest.project.name }}</a></td>
+      <td>{{ mergeRequest.title }}</td>
+    </tr>
+  </table>
+
+  <script src="vendor.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

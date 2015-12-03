@@ -1,0 +1,13 @@
+{
+  "name": "MergeRequestsCI",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "brunch": "^2.0.1",
+    "javascript-brunch": "^1.8.0",
+    "sass-brunch": "^1.9.2"
+  },
+  "dependencies": {
+    "constangular-brunch": "^0.1.4"
+  }
+}

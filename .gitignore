@@ -1,0 +1,4 @@
+/bower_components/
+/node_modules/
+/public/
+/app/config/api.yaml

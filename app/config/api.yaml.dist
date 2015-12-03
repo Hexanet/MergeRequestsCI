@@ -1,0 +1,7 @@
+development:
+  base_url: https://GITLAB/api/v3
+  private_token:
+
+production:
+  base_url: https://GITLAB/api/v3
+  private_token:
