@@ -2,19 +2,21 @@
 <html  ng-app="app">
 <head>
   <meta charset="utf-8">
-  <title>MergeRequestCI</title>
+  <title>Merge Request CI</title>
   <link rel="stylesheet" href="app.css">
 </head>
 <body ng-controller='MainCtrl as vm'>
 
-  <h1>Merge requests<h1>
+  <h1>Merge requests CI<h1>
 
   <table id="merge-requests-table">
     <thead>
       <tr>
         <th>Date</th>
         <th>Projet</th>
-        <th>Titre</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Branch</th>
       </tr>
     </thead>
     <tbody>
@@ -22,6 +24,8 @@
         <td>{{ mergeRequest.created_at | date:'short' }}</td>
         <td><a href="{{ mergeRequest.project.web_url }}">{{ mergeRequest.project.name }}</a></td>
         <td><a href="{{ mergeRequest.web_url }}">{{ mergeRequest.title }}</a></td>
+        <td><img ng-src="{{ mergeRequest.author.avatar_url }}" width="35px"></img>{{ mergeRequest.author.name }}<td>
+        <td>{{ mergeRequest.source_branch }} -> {{ mergeRequest.target_branch }}</td>
       </tr>
     <tbody>
   </table>
