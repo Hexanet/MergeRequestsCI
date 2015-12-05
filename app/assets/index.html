@@ -9,17 +9,21 @@
 
   <h1>Merge requests<h1>
 
-  <table border="1">
-    <tr>
-      <th>Date</th>
-      <th>Projet</th>
-      <th>Titre</th>
-    </tr>
-    <tr ng-repeat="mergeRequest in vm.mergeRequests">
-      <td>{{ mergeRequest.created_at }}</td>
-      <td><a href="{{ mergeRequest.project.web_url }}">{{ mergeRequest.project.name }}</a></td>
-      <td>{{ mergeRequest.title }}</td>
-    </tr>
+  <table id="merge-requests-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Projet</th>
+        <th>Titre</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="mergeRequest in vm.mergeRequests">
+        <td>{{ mergeRequest.created_at | date:'short' }}</td>
+        <td><a href="{{ mergeRequest.project.web_url }}">{{ mergeRequest.project.name }}</a></td>
+        <td><a href="{{ mergeRequest.web_url }}">{{ mergeRequest.title }}</a></td>
+      </tr>
+    <tbody>
   </table>
 
   <script src="vendor.js"></script>

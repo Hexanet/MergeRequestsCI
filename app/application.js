@@ -34,6 +34,13 @@ angular.module('app', ['config.api'])
         });
     };
 
+    var getMergerequest = function (url, project, mergeRequest) {
+      return request(url + '/projects/' + project.id + '/merge_request/' + mergeRequest.id)
+        .then(function (response) {
+          return response.data;
+        });
+    };
+
     var getRepos = function (url, page) {
       if (page === undefined) {
         page = 1;
@@ -50,6 +57,7 @@ angular.module('app', ['config.api'])
                 pull.project = {};
                 pull.project.name = repo.name;
                 pull.project.web_url = repo.web_url;
+                pull.web_url = repo.web_url + '/merge_requests/' + pull.iid;
                 pullFetcher.pulls[pull.id] = pull;
               });
             });

@@ -17,3 +17,12 @@ h1 {
     font-size: 70%;
   }
 }
+
+#merge-requests-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    padding: 5px;
+  }
+}
