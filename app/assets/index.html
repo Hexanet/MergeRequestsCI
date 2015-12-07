@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Merge Request CI</title>
+  <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
   <link rel="stylesheet" href="app.css">
 </head>
 <body ng-controller='MainCtrl as vm'>
@@ -17,6 +18,8 @@
         <th>Title</th>
         <th>Author</th>
         <th>Branch</th>
+        <th>Upvotes</th>
+        <th>Downvotes</th>
       </tr>
     </thead>
     <tbody>
@@ -24,8 +27,10 @@
         <td>{{ mergeRequest.created_at | date:'short' }}</td>
         <td><a href="{{ mergeRequest.project.web_url }}">{{ mergeRequest.project.name }}</a></td>
         <td><a href="{{ mergeRequest.web_url }}">{{ mergeRequest.title }}</a></td>
-        <td><img ng-src="{{ mergeRequest.author.avatar_url }}" width="35px"></img>{{ mergeRequest.author.name }}<td>
+        <td><img ng-src="{{ mergeRequest.author.avatar_url }}" width="35px"></img>{{ mergeRequest.author.name }}</td>
         <td>{{ mergeRequest.source_branch }} -> {{ mergeRequest.target_branch }}</td>
+        <td>{{ mergeRequest.votes.up }}</td>
+        <td>{{ mergeRequest.votes.down }}</td>
       </tr>
     <tbody>
   </table>
