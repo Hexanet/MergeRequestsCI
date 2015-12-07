@@ -1,28 +1,5 @@
-$default-bg: white;
-$default-text: black;
+@import '_variables.scss';
 
-body {
-  font-family: Georgia, serif;
-  font-size: 16px;
-  background: $default-bg;
-  color: $default-text;
-}
+@import '../../bower_components/foundation-sites/scss/foundation.scss';
 
-h1 {
-  font-size: 2em;
-  margin: 0.5em 0 1em;
-
-  & > small {
-    color: gray;
-    font-size: 70%;
-  }
-}
-
-#merge-requests-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  td {
-    padding: 5px;
-  }
-}
+@include foundation-everything;
