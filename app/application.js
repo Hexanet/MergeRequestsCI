@@ -72,6 +72,11 @@ angular.module('app', ['config.api'])
 
         return votes;
       });
+    },
+    getCommit: function(projectId, branch) {
+      return $http.get(apiConfig.base_url + '/projects/' + projectId + '/repository/commits/' + branch).then(function(response) {
+        return response.data;
+      });
     }
   }
 })
@@ -113,8 +118,12 @@ angular.module('app', ['config.api'])
               mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
               mergeRequest.votes = votes;
 
-              MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
-              updateFavico();
+              gitlabService.getCommit(project.id, mergeRequest.source_branch).then(function(commit) {
+                mergeRequest.ci = commit.status;
+
+                MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
+                updateFavico();
+              });
             });
           });
         });
