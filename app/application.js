@@ -2,19 +2,23 @@
 
 angular.module('app', ['config.api'])
 
-.provider('PullFetcher', function (apiConfig) {
+.provider('MergeRequestFetcher', function (apiConfig) {
   var baseUrl = apiConfig.base_url;
   var privateToken = apiConfig.private_token;
 
+  var favicon = new Favico({
+      animation : 'fade'
+  });
+  favicon.badge(0);
+
   this.$get = ['$http', '$q', function ($http, $q) {
 
-    var pullFetcher = {
-      pulls: {},
-      refreshPulls: function () {
+    var mergeRequestFetcher = {
+      mergeRequests: {},
+      refreshMergeRequests: function () {
         var self = this;
 
-        getRepos(baseUrl);
-
+        getProjects(baseUrl);
       }
     };
 
@@ -25,9 +29,7 @@ angular.module('app', ['config.api'])
       });
     };
 
-
-
-    var getRepoPulls = function (url, repo) {
+    var getProjectRequests = function (url, repo) {
       return request(url + '/projects/' + repo.id + '/merge_requests?state=opened')
         .then(function (response) {
           return response.data;
@@ -63,7 +65,7 @@ angular.module('app', ['config.api'])
         });
     }
 
-    var getRepos = function (url, page) {
+    var getProjects = function (url, page) {
       if (page === undefined) {
         page = 1;
       }
@@ -74,35 +76,38 @@ angular.module('app', ['config.api'])
           });
 
           projects.forEach(function (repo) {
-            getRepoPulls(url, repo).then(function (pulls) {
-              pulls.forEach(function (pull) {
-                getVotes(url, repo, pull).then(function(votes) {
-                  pull.project = {};
-                  pull.project.name = repo.name;
-                  pull.project.web_url = repo.web_url;
-                  pull.web_url = repo.web_url + '/merge_requests/' + pull.iid;
-                  pull.votes = votes;
-                  pullFetcher.pulls[pull.id] = pull;
+            getProjectRequests(url, repo).then(function (mergeRequests) {
+              mergeRequests.forEach(function (mergeRequest) {
+                getVotes(url, repo, mergeRequest).then(function(votes) {
+                  mergeRequest.project = {};
+                  mergeRequest.project.name = repo.name;
+                  mergeRequest.project.web_url = repo.web_url;
+                  mergeRequest.web_url = repo.web_url + '/merge_requests/' + mergeRequest.iid;
+                  mergeRequest.votes = votes;
+                  mergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
+
+                  favicon.badge(Object.keys(mergeRequestFetcher.mergeRequests).length);
                 });
               });
             });
           });
+
           if (response.data.length) {
-            getRepos(url, page + 1);
+            getProjects(url, page + 1);
           }
         });
     };
 
-    return pullFetcher;
+    return mergeRequestFetcher;
   }];
 })
 
-.controller('MainCtrl', function ($interval, PullFetcher) {
-  this.mergeRequests = PullFetcher.pulls;
+.controller('MainCtrl', function ($interval, MergeRequestFetcher) {
+  this.mergeRequests = MergeRequestFetcher.mergeRequests;
 
   var polling = $interval(function () {
-    PullFetcher.refreshPulls();
+    MergeRequestFetcher.refreshMergeRequests();
   }, 5 * 60 * 1000);
 
-  PullFetcher.refreshPulls();
+  MergeRequestFetcher.refreshMergeRequests();
 });
