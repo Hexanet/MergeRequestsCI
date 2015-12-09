@@ -18,6 +18,7 @@
   "dependencies": {
     "angular": "~1.4.8",
     "foundation-sites": "~6.0.5",
-    "favico.js": "~0.3.10"
+    "favico.js": "~0.3.10",
+    "lodash": "~3.10.1"
   }
 }
