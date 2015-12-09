@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('app', ['config.api'])
+angular.module('app', ['config.api', 'emojify'])
 
 .factory('favicoService', function() {
     var favico = new Favico({
