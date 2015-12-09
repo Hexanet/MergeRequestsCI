@@ -19,6 +19,17 @@
     "angular": "~1.4.8",
     "foundation-sites": "~6.0.5",
     "favico.js": "~0.3.10",
-    "lodash": "~3.10.1"
+    "lodash": "~3.10.1",
+    "angular-i18n": "~1.4.8"
+  },
+  "overrides": {
+    "angular-i18n": {
+      "main": [
+        "angular-locale_fr-fr.js"
+      ],
+      "dependencies": {
+        "angular": "*"
+      }
+    }
   }
 }
