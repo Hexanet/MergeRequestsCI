@@ -136,13 +136,21 @@ angular.module('app', ['config.api', 'emojify'])
 })
 
 .controller('MainCtrl', function ($interval, MergeRequestFetcher) {
-  this.mergeRequests = MergeRequestFetcher.mergeRequests;
+  var vm = this;
+  vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
   var polling = $interval(function () {
     MergeRequestFetcher.refresh();
-  }, 5 * 60 * 1000);
+    vm.lastRefresh = new Date();
+  }, 60 * 1000);
+
+  vm.refresh = function() {
+    MergeRequestFetcher.refresh();
+    vm.lastRefresh = new Date();
+  };
 
   MergeRequestFetcher.refresh();
+  vm.lastRefresh = new Date();
 })
 
 .run(function($http, apiConfig) {
