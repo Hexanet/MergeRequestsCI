@@ -8,7 +8,15 @@
 </head>
 <body ng-controller='MainCtrl as vm'>
 
-  <h1>Merge requests CI</h1>
+  <div class="row">
+    <div class="large-10 columns">
+      <h1>Merge requests CI</h1>
+    </div>
+    <div class="large-2 columns">
+      Last refresh : {{ vm.lastRefresh | date:'shortTime' }}
+      <a ng-click="vm.refresh()" class="button">Refresh</a>
+    </div>
+  </div>
 
   <div class="row">
     <table class="twelve columns">
