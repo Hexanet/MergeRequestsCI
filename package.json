@@ -7,7 +7,8 @@
     "constangular-brunch": "^0.1.4",
     "bower": "^1.6.0",
     "javascript-brunch": "^1.8.0",
-    "sass-brunch": "^1.9.2"
+    "sass-brunch": "^1.9.2",
+    "assetsmanager-brunch": "^1.8.1"
   },
   "dependencies": {
   },

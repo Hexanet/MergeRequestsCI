@@ -3,3 +3,10 @@
 @import '../../bower_components/foundation-sites/scss/foundation.scss';
 
 @include foundation-everything;
+
+.emoji {
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-block;
+    margin-bottom: -0.25em;
+}

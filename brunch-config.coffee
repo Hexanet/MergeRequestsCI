@@ -7,3 +7,7 @@ module.exports = config:
       'vendor.js': /^(?!^(app))/
       'app.js': /^app/
     stylesheets: joinTo: 'app.css'
+  plugins:
+    assetsmanager:
+      copyTo:
+        'images/emoji': ['bower_components/emojify.js/dist/images/basic/*']

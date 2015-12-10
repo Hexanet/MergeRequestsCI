@@ -28,7 +28,7 @@
         <tr ng-repeat="mergeRequest in vm.mergeRequests">
           <td>{{ mergeRequest.created_at | date:'short' }}</td>
           <td><a href="{{ mergeRequest.project.web_url }}" target="_blank">{{ mergeRequest.project.name }}</a></td>
-          <td><a href="{{ mergeRequest.web_url }}" target="_blank">{{ mergeRequest.title }}</a></td>
+          <td><a href="{{ mergeRequest.web_url }}" target="_blank" ng-bind-html="mergeRequest.title|emojify"></a></td>
           <td><img ng-src="{{ mergeRequest.author.avatar_url }}" width="35px"></img>{{ mergeRequest.author.name }}</td>
           <td>{{ mergeRequest.source_branch }} -> {{ mergeRequest.target_branch }}</td>
           <td>{{ mergeRequest.votes.up }}</td>

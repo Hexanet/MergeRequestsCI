@@ -20,7 +20,9 @@
     "foundation-sites": "~6.0.5",
     "favico.js": "~0.3.10",
     "lodash": "~3.10.1",
-    "angular-i18n": "~1.4.8"
+    "angular-i18n": "~1.4.8",
+    "angular-emojify": "https://github.com/emilol/angular-emojify.git#89a877f",
+    "emojify.js": "~1.1.0"
   },
   "overrides": {
     "angular-i18n": {
