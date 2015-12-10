@@ -89,10 +89,10 @@ angular.module('app', ['config.api', 'emojify'])
     favicoService.badge(Object.keys(MergeRequestFetcher.mergeRequests).length);
   };
 
-  var removeClosedMergeRequests = function() {
+  var cleanMergeRequests = function() {
     angular.forEach(MergeRequestFetcher.mergeRequests, function(mergeRequest, id) {
       gitlabService.getMergeRequest(mergeRequest.project_id, id).then(function(mergeRequestData) {
-        if (mergeRequestData.state === 'closed') {
+        if (mergeRequestData.state === 'closed' || mergeRequestData.state === 'merged') {
           delete MergeRequestFetcher.mergeRequests[id];
           updateFavico();
         }
@@ -101,7 +101,7 @@ angular.module('app', ['config.api', 'emojify'])
   }
 
   MergeRequestFetcher.refresh = function () {
-    removeClosedMergeRequests();
+    cleanMergeRequests();
 
     gitlabService.getProjects().then(function(projects) {
       projects = projects.filter(function(project) {
