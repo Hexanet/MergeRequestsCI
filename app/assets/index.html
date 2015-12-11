@@ -27,8 +27,8 @@
           <th>Title</th>
           <th>Author</th>
           <th>Branch</th>
-          <th>Upvotes</th>
-          <th>Downvotes</th>
+          <th ng-bind-html="':+1:'|emojify"></th>
+          <th ng-bind-html="':-1:'|emojify"></th>
           <th>CI</th>
         </tr>
       </thead>
