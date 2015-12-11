@@ -1,3 +1,9 @@
-base_url: https://GITLAB/api/v3
-private_token:
-refresh_interval: 5
+development:
+  base_url: https://GITLAB/api/v3
+  private_token:
+  refresh_interval: 5
+
+production
+  base_url: https://GITLAB/api/v3
+  private_token:
+  refresh_interval: 5
