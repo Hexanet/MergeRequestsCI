@@ -8,12 +8,14 @@
     "bower": "^1.6.0",
     "javascript-brunch": "^1.8.0",
     "sass-brunch": "^1.9.2",
-    "assetsmanager-brunch": "^1.8.1"
+    "assetsmanager-brunch": "^1.8.1",
+    "serve": "^1.4.0"
   },
   "dependencies": {
   },
   "scripts": {
     "bower": "bower",
-    "brunch": "brunch"
+    "brunch": "brunch",
+    "serve": "serve -f app/assets/favicon.ico public/"
   }
 }

@@ -10,6 +10,7 @@ $ cp app/config/api.yaml.dist app/config/api.yaml
 $ npm install
 $ npm run bower -- install
 $ npm run brunch -- b
+$ npm run serve
 ```
 
-Then open `public/index.html` in your browser.
+Then open `http://localhost:3000` in your browser.
