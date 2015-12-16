@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('app', ['config.api', 'emojify'])
+angular.module('app', ['config.app', 'emojify'])
 
 .factory('favicoService', function() {
     var favico = new Favico({
@@ -20,14 +20,14 @@ angular.module('app', ['config.api', 'emojify'])
     };
 })
 
-.factory('gitlabService', function($q, $http, apiConfig) {
+.factory('gitlabService', function($q, $http, appConfig) {
   return {
     getProjects: function() {
       var deferred = $q.defer();
       var projects = [];
 
       function loadProjects(page) {
-        $http.get(apiConfig.base_url + '/projects?per_page=100&page=' + page)
+        $http.get(appConfig.apiUrl + '/projects?per_page=100&page=' + page)
          .then(function(response) {
               projects = _.union(projects, response.data);
 
@@ -45,17 +45,17 @@ angular.module('app', ['config.api', 'emojify'])
       return deferred.promise;
     },
     getMergeRequests: function(projectId) {
-       return $http.get(apiConfig.base_url + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
+       return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
          return response.data;
        });
     },
     getMergeRequest: function(projectId, mergeRequestId) {
-       return $http.get(apiConfig.base_url + '/projects/' + projectId + '/merge_request/' + mergeRequestId).then(function(response) {
+       return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_request/' + mergeRequestId).then(function(response) {
          return response.data;
        });
     },
     getMergeRequestVotes: function(projectId, mergeRequestId) {
-      return $http.get(apiConfig.base_url + '/projects/' + projectId + '/merge_request/' + mergeRequestId + '/comments?per_page=100').then(function(response) {
+      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_request/' + mergeRequestId + '/comments?per_page=100').then(function(response) {
         var votes = {
           'up': 0,
           'down': 0
@@ -74,7 +74,7 @@ angular.module('app', ['config.api', 'emojify'])
       });
     },
     getCommit: function(projectId, branch) {
-      return $http.get(apiConfig.base_url + '/projects/' + projectId + '/repository/commits/' + branch).then(function(response) {
+      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + branch).then(function(response) {
         return response.data;
       });
     }
@@ -135,14 +135,14 @@ angular.module('app', ['config.api', 'emojify'])
   return MergeRequestFetcher;
 })
 
-.controller('MainCtrl', function ($interval, MergeRequestFetcher, apiConfig) {
+.controller('MainCtrl', function ($interval, MergeRequestFetcher, appConfig) {
   var vm = this;
   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
   var polling = $interval(function () {
     MergeRequestFetcher.refresh();
     vm.lastRefresh = new Date();
-  }, apiConfig.refresh_interval * 60 * 1000);
+  }, appConfig.refreshInterval * 60 * 1000);
 
   vm.refresh = function() {
     MergeRequestFetcher.refresh();
@@ -153,8 +153,8 @@ angular.module('app', ['config.api', 'emojify'])
   vm.lastRefresh = new Date();
 })
 
-.run(function($http, apiConfig) {
+.run(function($http, appConfig) {
   $http.defaults.headers.common = {
-    'PRIVATE-TOKEN': apiConfig.private_token
+    'PRIVATE-TOKEN': appConfig.token
   };
 });
