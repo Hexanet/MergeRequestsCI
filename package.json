@@ -16,7 +16,7 @@
   "scripts": {
     "bower": "bower",
     "brunch": "brunch",
-    "serve": "serve -f app/assets/favicon.ico public/",
+    "serve": "brunch b --production && serve -f app/assets/favicon.ico public/",
     "postinstall": "bower install"
   }
 }
