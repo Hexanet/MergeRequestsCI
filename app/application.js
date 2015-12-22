@@ -27,7 +27,7 @@ angular.module('app', ['config.app', 'emojify'])
       var projects = [];
 
       function loadProjects(page) {
-        $http.get(appConfig.apiUrl + '/projects?per_page=100&page=' + page)
+        $http.get(appConfig.apiUrl + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
          .then(function(response) {
               projects = _.union(projects, response.data);
 
