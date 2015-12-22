@@ -54,23 +54,32 @@ angular.module('app', ['config.app', 'emojify'])
          return response.data;
        });
     },
-    getMergeRequestVotes: function(projectId, mergeRequestId) {
-      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_request/' + mergeRequestId + '/comments?per_page=100').then(function(response) {
-        var votes = {
-          'up': 0,
-          'down': 0
+    getMergeRequestExtraData: function(projectId, mergeRequestId) {
+      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100').then(function(response) {
+        var data = {
+          'votes': {
+            'up': 0,
+            'down': 0
+          },
+          'lastActivity': null
         };
 
         response.data.forEach(function(comment) {
-            if(comment.note == '+1') {
-              votes.up++;
+            if(comment.body == '+1') {
+              data.votes.up++;
             }
-            else if(comment.note == '-1') {
-              votes.down++;
+            else if(comment.body == '-1') {
+              data.votes.down++;
             }
         });
 
-        return votes;
+        var lastNote =  _.last(response.data);
+
+        if(lastNote) {
+          data.lastActivity = lastNote.created_at;
+        }
+
+        return data;
       });
     },
     getCommit: function(projectId, branch) {
@@ -111,12 +120,14 @@ angular.module('app', ['config.app', 'emojify'])
       projects.forEach(function (project) {
         gitlabService.getMergeRequests(project.id).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
-            gitlabService.getMergeRequestVotes(project.id, mergeRequest.id).then(function(votes) {
+            gitlabService.getMergeRequestExtraData(project.id, mergeRequest.id).then(function(extraData) {
               mergeRequest.project = {};
               mergeRequest.project.name = project.name;
               mergeRequest.project.web_url = project.web_url;
               mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
-              mergeRequest.votes = votes;
+              mergeRequest.votes = extraData.votes;
+
+              mergeRequest.lastActivity = extraData.lastActivity ? extraData.lastActivity : mergeRequest.updated_at;
 
               gitlabService.getCommit(project.id, mergeRequest.source_branch).then(function(commit) {
                 mergeRequest.ci = commit.status;
