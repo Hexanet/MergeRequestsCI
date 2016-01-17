@@ -130,7 +130,7 @@ angular.module('app', ['config.app', 'emojify'])
               mergeRequest.lastActivity = extraData.lastActivity ? extraData.lastActivity : mergeRequest.updated_at;
 
               gitlabService.getCommit(project.id, mergeRequest.source_branch).then(function(commit) {
-                mergeRequest.ci = commit.status;
+                mergeRequest.ci = commit.status == "not_found" ? null : commit.status;
 
                 MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
                 updateFavico();
