@@ -41,7 +41,9 @@
           <td>{{ mergeRequest.source_branch }} -> {{ mergeRequest.target_branch }}</td>
           <td>{{ mergeRequest.votes.up }}</td>
           <td>{{ mergeRequest.votes.down }}</td>
-          <td><span ng-class="{'success': mergeRequest.ci == 'success', 'alert': mergeRequest.ci == 'failed'}" class="label">{{ mergeRequest.ci }}</span></td>
+          <td>
+            <span ng-if="mergeRequest.ci" ng-class="{'success': mergeRequest.ci == 'success', 'alert': mergeRequest.ci == 'failed'}" class="label">{{ mergeRequest.ci }}</span>
+          </td>
         </tr>
       <tbody>
     </table>
