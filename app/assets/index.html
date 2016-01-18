@@ -39,11 +39,13 @@
           <td><a href="{{ mergeRequest.web_url }}" target="_blank" ng-bind-html="mergeRequest.title|emojify"></a></td>
           <td class=""><img ng-src="{{ mergeRequest.author.avatar_url }}" width="35px" alt="{{ mergeRequest.author.name }}"></img></td>
           <td>{{ mergeRequest.source_branch }} -> {{ mergeRequest.target_branch }}</td>
-          <td>{{ mergeRequest.votes.up }}</td>
-          <td>{{ mergeRequest.votes.down }}</td>
-          <td>
-            <span ng-if="mergeRequest.ci" ng-class="{'success': mergeRequest.ci == 'success', 'alert': mergeRequest.ci == 'failed'}" class="label">{{ mergeRequest.ci }}</span>
-          </td>
+            <td>
+                <span ng-class="{'success': mergeRequest.votes.up > 0, 'alert': mergeRequest.votes.up == 0}" class="label">{{ mergeRequest.votes.up }}</span>
+            </td>
+            <td>
+                <span ng-class="{'success': mergeRequest.votes.down == 0, 'alert': mergeRequest.votes.down > 0}" class="label">{{ mergeRequest.votes.down }}</span>
+            </td>
+          <td><span ng-if="mergeRequest.ci" ng-class="{'success': mergeRequest.ci == 'success', 'alert': mergeRequest.ci == 'failed'}" class="label">{{ mergeRequest.ci }}</span></td>
         </tr>
       <tbody>
     </table>
