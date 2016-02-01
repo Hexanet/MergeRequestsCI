@@ -54,32 +54,9 @@ angular.module('app', ['config.app', 'emojify'])
          return response.data;
        });
     },
-    getMergeRequestExtraData: function(projectId, mergeRequestId) {
+    getNotes: function(projectId, mergeRequestId) {
       return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100').then(function(response) {
-        var data = {
-          'votes': {
-            'up': 0,
-            'down': 0
-          },
-          'lastActivity': null
-        };
-
-        response.data.forEach(function(comment) {
-            if(comment.body == '+1') {
-              data.votes.up++;
-            }
-            else if(comment.body == '-1') {
-              data.votes.down++;
-            }
-        });
-
-        var lastNote =  _.last(response.data);
-
-        if(lastNote) {
-          data.lastActivity = lastNote.created_at;
-        }
-
-        return data;
+        return response.data;
       });
     },
     getCommit: function(projectId, branch) {
@@ -120,14 +97,14 @@ angular.module('app', ['config.app', 'emojify'])
       projects.forEach(function (project) {
         gitlabService.getMergeRequests(project.id).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
-            gitlabService.getMergeRequestExtraData(project.id, mergeRequest.id).then(function(extraData) {
+            gitlabService.getNotes(project.id, mergeRequest.id).then(function(notes) {
               mergeRequest.project = {};
               mergeRequest.project.name = project.name;
               mergeRequest.project.web_url = project.web_url;
               mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
-              mergeRequest.votes = extraData.votes;
 
-              mergeRequest.lastActivity = extraData.lastActivity ? extraData.lastActivity : mergeRequest.updated_at;
+              var lastNote =  _.last(notes);
+              mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
 
               gitlabService.getCommit(project.id, mergeRequest.source_branch).then(function(commit) {
                 mergeRequest.ci = commit.status == "not_found" ? null : commit.status;
