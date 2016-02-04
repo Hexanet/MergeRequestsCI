@@ -2,6 +2,12 @@
 
 angular.module('app', ['config.app', 'emojify'])
 
+.config(function($httpProvider, appConfig) {
+  $httpProvider.defaults.headers.common = {
+    'PRIVATE-TOKEN': appConfig.token
+  };
+})
+
 .factory('favicoService', function() {
     var favico = new Favico({
         animation : 'fade'
@@ -27,17 +33,13 @@ angular.module('app', ['config.app', 'emojify'])
       var projects = [];
 
       function loadProjects(page) {
-        $http.get(appConfig.apiUrl + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
-         .then(function(response) {
-              projects = _.union(projects, response.data);
+        $http
+          .get(appConfig.apiUrl + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
+          .then(function(response) {
+            projects = _.union(projects, response.data);
 
-              if(response.data.length) {
-                 loadProjects(++page);
-              }
-              else {
-                 deferred.resolve(projects);
-              }
-         })
+            response.data.length ? loadProjects(++page) : deferred.resolve(projects);
+         });
       }
 
       loadProjects(1);
@@ -97,22 +99,24 @@ angular.module('app', ['config.app', 'emojify'])
       projects.forEach(function (project) {
         gitlabService.getMergeRequests(project.id).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
-            gitlabService.getNotes(project.id, mergeRequest.id).then(function(notes) {
-              mergeRequest.project = {};
-              mergeRequest.project.name = project.name;
-              mergeRequest.project.web_url = project.web_url;
-              mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
+            mergeRequest.project = {};
+            mergeRequest.project.name = project.name;
+            mergeRequest.project.web_url = project.web_url;
+            mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
 
-              var lastNote =  _.last(notes);
-              mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
+            gitlabService
+              .getNotes(project.id, mergeRequest.id)
+              .then(function(notes) {
+                var lastNote =  _.last(notes);
+                mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
 
-              gitlabService.getCommit(project.id, mergeRequest.source_branch).then(function(commit) {
+                return gitlabService.getCommit(project.id, mergeRequest.source_branch)
+              }).then(function(commit) {
                 mergeRequest.ci = commit.status == "not_found" ? null : commit.status;
 
                 MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
                 updateFavico();
               });
-            });
           });
         });
       });
@@ -139,10 +143,4 @@ angular.module('app', ['config.app', 'emojify'])
 
   MergeRequestFetcher.refresh();
   vm.lastRefresh = new Date();
-})
-
-.run(function($http, appConfig) {
-  $http.defaults.headers.common = {
-    'PRIVATE-TOKEN': appConfig.token
-  };
 });
