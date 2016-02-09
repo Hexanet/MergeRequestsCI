@@ -7,15 +7,19 @@
   <link rel="stylesheet" href="app.css">
 </head>
 <body ng-controller='MainCtrl as vm'>
-
-  <div class="row">
-    <div class="large-10 columns">
-      <h1>Merge requests CI</h1>
-    </div>
-    <div class="large-2 columns">
-      Last refresh : {{ vm.lastRefresh | date:'shortTime' }}
-      <a ng-click="vm.refresh()" class="button">Refresh</a>
-    </div>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text title"><img src="logo.png" /> Merge Request CI</li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="menu">
+                <li class="menu-text">Last refresh : {{ vm.lastRefresh | date:'shortTime' }}</li>
+                <li><a ng-click="vm.refresh()" class="button">Refresh</a></li>
+            </ul>
+        </div>
+      </div>
   </div>
 
   <div class="row">

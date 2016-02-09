@@ -10,3 +10,14 @@
     display: inline-block;
     margin-bottom: -0.25em;
 }
+
+.top-bar {
+
+    margin-bottom: 2em;
+
+    .menu-text.title {
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 2em;
+    }
+}
