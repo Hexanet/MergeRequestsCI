@@ -2,7 +2,7 @@
 
 UI to see all GitLab merge requests of your teams in one place.
 
-![MergeRequestsCI](http://imagizer.imageshack.us/v2/640x480q90/910/3809QT.png "MergeRequestsCI")
+![MergeRequestsCI](screenshot.png)
 
 ## Requirements
 
