@@ -65,6 +65,11 @@ angular.module('app', ['config.app', 'emojify'])
       return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + branch).then(function(response) {
         return response.data;
       });
+    },
+    getCommitStatus: function(projectId, commitSha) {
+      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses').then(function(response) {
+        return response.data;
+      });
     }
   }
 })
@@ -110,9 +115,19 @@ angular.module('app', ['config.app', 'emojify'])
                 var lastNote =  _.last(notes);
                 mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
 
-                return gitlabService.getCommit(project.id, mergeRequest.source_branch)
+                return gitlabService.getCommit(project.id, mergeRequest.source_branch);
               }).then(function(commit) {
-                mergeRequest.ci = commit.status == "not_found" ? null : commit.status;
+                mergeRequest.ci = {
+                  status: commit.status == "not_found" ? null : commit.status
+                };
+
+                return commit.status == "not_found" ? [] : gitlabService.getCommitStatus(project.id, commit.id)
+              }).then(function(commitStatus) {
+                commitStatus = _.head(commitStatus);
+
+                if(commitStatus) {
+                  mergeRequest.ci.url = commitStatus.target_url;
+                }
 
                 MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
                 updateFavico();
