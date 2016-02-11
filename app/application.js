@@ -91,7 +91,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
         }
       });
     });
-  }
+  };
 
   MergeRequestFetcher.refresh = function () {
     cleanMergeRequests();
@@ -158,4 +158,10 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
 
   MergeRequestFetcher.refresh();
   vm.lastRefresh = new Date();
+})
+
+.filter('length', function() {
+  return function(collection) {
+    return _.size(collection);
+  }
 });
