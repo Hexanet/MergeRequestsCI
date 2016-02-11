@@ -12,6 +12,7 @@
     "serve": "^1.4.0"
   },
   "dependencies": {
+    "css-brunch": "^2.0.0"
   },
   "scripts": {
     "bower": "bower",

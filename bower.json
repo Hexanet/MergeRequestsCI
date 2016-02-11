@@ -22,7 +22,8 @@
     "lodash": "~3.10.1",
     "angular-i18n": "~1.4.8",
     "angular-emojify": "https://github.com/emilol/angular-emojify.git#89a877f",
-    "emojify.js": "~1.1.0"
+    "emojify.js": "~1.1.0",
+    "angular-tooltips": "~1.0.7"
   },
   "overrides": {
     "angular-i18n": {

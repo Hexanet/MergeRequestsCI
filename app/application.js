@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('app', ['config.app', 'emojify'])
+angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
 
 .config(function($httpProvider, appConfig) {
   $httpProvider.defaults.headers.common = {

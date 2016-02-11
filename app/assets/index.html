@@ -41,7 +41,11 @@
           <td>{{ mergeRequest.lastActivity | date:'short' }}</td>
           <td><a href="{{ mergeRequest.project.web_url }}" target="_blank">{{ mergeRequest.project.name }}</a></td>
           <td><a href="{{ mergeRequest.web_url }}" target="_blank" ng-bind-html="mergeRequest.title|emojify"></a></td>
-          <td class=""><img ng-src="{{ mergeRequest.author.avatar_url }}" width="35px" alt="{{ mergeRequest.author.name }}"></img></td>
+          <td>
+              <span tooltips tooltip-template="{{ mergeRequest.author.name }}" tooltip-size="small">
+                  <img ng-src="{{ mergeRequest.author.avatar_url }}" width="35px" alt="{{ mergeRequest.author.name }}"></img>
+              </span>
+          </td>
           <td>{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
           <td>
               <span ng-class="{'success': mergeRequest.upvotes > 0, 'alert': mergeRequest.upvotes == 0}" class="label">{{ mergeRequest.upvotes }}</span>
