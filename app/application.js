@@ -115,6 +115,18 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
                 var lastNote =  _.last(notes);
                 mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
 
+                mergeRequest.upvoters = [];
+                mergeRequest.downvoters = [];
+                notes.forEach(function (note) {
+                    if (note.upvote) {
+                        mergeRequest.upvoters.push(note.author.name);
+                    }
+
+                    if (note.downvote) {
+                        mergeRequest.downvoters.push(note.author.name);
+                    }
+                });
+
                 return gitlabService.getCommit(project.id, mergeRequest.source_branch);
               }).then(function(commit) {
                 mergeRequest.ci = {
