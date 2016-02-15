@@ -29,5 +29,9 @@ table {
 }
 
 tooltip {
+    white-space: nowrap;
+}
+
+.author, .downvote, .upvote {
     cursor: help;
 }
