@@ -8,70 +8,69 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
   };
 })
 
-.factory('favicoService', function() {
-    var favico = new Favico({
-        animation : 'fade'
-    });
+.service('favicoService', function() {
+  var favico = new Favico({
+    animation : 'fade'
+  });
 
-    var badge = function(num) {
-        favico.badge(num);
-    };
-    var reset = function() {
-        favico.reset();
-    };
+  this.badge = function(num) {
+    favico.badge(num);
+  };
 
-    return {
-        badge : badge,
-        reset : reset
-    };
+  this.reset = function() {
+    favico.reset();
+  };
 })
 
-.factory('gitlabService', function($q, $http, appConfig) {
-  return {
-    getProjects: function() {
-      var deferred = $q.defer();
-      var projects = [];
+.service('gitlabService', function($q, $http, appConfig) {
+  this.getProjects = function() {
+    var deferred = $q.defer();
+    var projects = [];
 
-      function loadProjects(page) {
-        $http
-          .get(appConfig.apiUrl + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
-          .then(function(response) {
-            projects = _.union(projects, response.data);
+    function loadProjects(page) {
+      $http
+        .get(appConfig.apiUrl + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
+        .then(function(response) {
+          projects = _.union(projects, response.data);
 
-            response.data.length ? loadProjects(++page) : deferred.resolve(projects);
-         });
-      }
-
-      loadProjects(1);
-
-      return deferred.promise;
-    },
-    getMergeRequests: function(projectId) {
-       return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
-         return response.data;
+          response.data.length ? loadProjects(++page) : deferred.resolve(projects);
        });
-    },
-    getMergeRequest: function(projectId, mergeRequestId) {
-       return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_request/' + mergeRequestId).then(function(response) {
-         return response.data;
-       });
-    },
-    getNotes: function(projectId, mergeRequestId) {
-      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100').then(function(response) {
-        return response.data;
-      });
-    },
-    getCommit: function(projectId, branch) {
-      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + branch).then(function(response) {
-        return response.data;
-      });
-    },
-    getCommitStatus: function(projectId, commitSha) {
-      return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses').then(function(response) {
-        return response.data;
-      });
     }
-  }
+
+    loadProjects(1);
+
+    return deferred.promise;
+  };
+
+  this.getMergeRequests = function(projectId) {
+    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
+      return response.data;
+    });
+  };
+
+  this.getMergeRequest = function(projectId, mergeRequestId) {
+    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_request/' + mergeRequestId).then(function(response) {
+      return response.data;
+    });
+  };
+
+  this.getNotes = function(projectId, mergeRequestId) {
+    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100').then(function(response) {
+      return response.data;
+    });
+  };
+
+  this.getCommit = function(projectId, branch) {
+    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + branch).then(function(response) {
+      return response.data;
+    });
+  };
+
+  this.getCommitStatus = function(projectId, commitSha) {
+    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses').then(function(response) {
+      return response.data;
+    });
+    };
 })
 
 .service('MergeRequestFetcher', function (gitlabService, favicoService) {
