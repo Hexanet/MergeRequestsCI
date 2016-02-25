@@ -1,6 +1,6 @@
 # MergeRequestsCI
 
-UI to see all GitLab merge requests of your teams in one place.
+> UI to see all GitLab merge requests of your teams in one place.
 
 ![MergeRequestsCI](screenshot.png)
 
@@ -12,15 +12,15 @@ UI to see all GitLab merge requests of your teams in one place.
 
 ### Clone the project
 
-```shell
-$ git clone https://github.com/Hexanet/MergeRequestsCI.git
-$ cd MergeRequestsCI
+```bash
+> git clone https://github.com/Hexanet/MergeRequestsCI.git
+> cd MergeRequestsCI
 ```
 
 ### Install dependencies
 
-```shell
-$ npm install
+```bash
+> npm install
 ```
 
 ## Configuration
@@ -37,8 +37,8 @@ Options :
 
 After configuration, you have to build the code and launch the server.
 
-```shell
-$ npm run serve
+```bash
+> npm run serve
 ```
 
 Then open `http://localhost:3000` in your browser.
