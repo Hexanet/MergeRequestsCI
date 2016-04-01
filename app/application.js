@@ -42,6 +42,12 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
     return deferred.promise;
   };
 
+  this.getUser = function(projectId) {
+    return $http.get(appConfig.apiUrl + '/user').then(function(response) {
+      return response.data;
+    });
+  };
+
   this.getMergeRequests = function(projectId) {
     return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
       return response.data;
@@ -91,6 +97,11 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
       });
     });
   };
+
+  var user = null;
+  gitlabService.getUser().then(function(userData) {
+    user = userData;
+  });
 
   MergeRequestFetcher.refresh = function () {
     cleanMergeRequests();
