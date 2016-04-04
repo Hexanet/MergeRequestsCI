@@ -104,7 +104,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
         gitlabService.getMergeRequests(project.id).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
             mergeRequest.project = {};
-            mergeRequest.project.name = project.name;
+            mergeRequest.project.name = project.name_with_namespace;
             mergeRequest.project.web_url = project.web_url;
             mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
 
