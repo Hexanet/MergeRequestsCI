@@ -42,6 +42,12 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
     return deferred.promise;
   };
 
+  this.getUser = function(projectId) {
+    return $http.get(appConfig.apiUrl + '/user').then(function(response) {
+      return response.data;
+    });
+  };
+
   this.getMergeRequests = function(projectId) {
     return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
       return response.data;
@@ -92,6 +98,11 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
     });
   };
 
+  var user = null;
+  gitlabService.getUser().then(function(userData) {
+    user = userData;
+  });
+
   MergeRequestFetcher.refresh = function () {
     cleanMergeRequests();
 
@@ -116,13 +127,22 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
 
                 mergeRequest.upvoters = [];
                 mergeRequest.downvoters = [];
+                mergeRequest.i_have_voted = 0;
                 notes.forEach(function (note) {
                     if (note.upvote) {
                         mergeRequest.upvoters.push(note.author.name);
+
+                        if (note.author.id === user.id) {
+                            mergeRequest.i_have_voted = 1;
+                        }
                     }
 
                     if (note.downvote) {
                         mergeRequest.downvoters.push(note.author.name);
+
+                        if (note.author.id === user.id) {
+                            mergeRequest.i_have_voted = -1;
+                        }
                     }
                 });
 
