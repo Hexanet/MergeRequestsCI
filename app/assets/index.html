@@ -63,7 +63,9 @@
               </span>
           </td>
           <td>
-            -
+            <span ng-if="mergeRequest.i_have_voted === 0">-</span>
+            <span ng-if="mergeRequest.i_have_voted === 1" ng-bind-html="':+1:'|emojify"></span>
+            <span ng-if="mergeRequest.i_have_voted === -1" ng-bind-html="':-1:'|emojify"></span>
           </td>
           <td>
             <a href="{{ mergeRequest.ci.url }}" target="_blank" ng-if="mergeRequest.ci.status" ng-class="{'success': mergeRequest.ci.status == 'success', 'alert': mergeRequest.ci.status == 'failed'}" class="button tiny">{{ mergeRequest.ci.status }}</a>

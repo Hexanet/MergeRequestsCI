@@ -127,13 +127,22 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
 
                 mergeRequest.upvoters = [];
                 mergeRequest.downvoters = [];
+                mergeRequest.i_have_voted = 0;
                 notes.forEach(function (note) {
                     if (note.upvote) {
                         mergeRequest.upvoters.push(note.author.name);
+
+                        if (note.author.id === user.id) {
+                            mergeRequest.i_have_voted = 1;
+                        }
                     }
 
                     if (note.downvote) {
                         mergeRequest.downvoters.push(note.author.name);
+
+                        if (note.author.id === user.id) {
+                            mergeRequest.i_have_voted = -1;
+                        }
                     }
                 });
 
