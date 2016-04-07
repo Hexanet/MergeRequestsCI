@@ -67,7 +67,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
   };
 
   this.getCommit = function(projectId, branch) {
-    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + branch).then(function(response) {
+    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + encodeURIComponent(branch)).then(function(response) {
       return response.data;
     });
   };
