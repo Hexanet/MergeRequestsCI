@@ -79,9 +79,10 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
     };
 })
 
-.service('MergeRequestFetcher', function (gitlabService, favicoService) {
+.service('MergeRequestFetcher', function (gitlabService, favicoService, $q) {
   var MergeRequestFetcher = {};
   MergeRequestFetcher.mergeRequests = {};
+  MergeRequestFetcher.user = null;
 
   var updateFavico = function() {
     favicoService.badge(Object.keys(MergeRequestFetcher.mergeRequests).length);
@@ -98,10 +99,21 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
     });
   };
 
-  var user = null;
-  gitlabService.getUser().then(function(userData) {
-    user = userData;
-  });
+  MergeRequestFetcher.getUser = function() {
+    var deferred = $q.defer();
+    var projects = [];
+
+    if (MergeRequestFetcher.user == null) {
+      gitlabService.getUser().then(function(userData) {
+        MergeRequestFetcher.user = userData;
+        deferred.resolve(userData);
+      });
+    } else {
+      deferred.resolve(MergeRequestFetcher.user);
+    }
+
+    return deferred.promise;
+  }
 
   MergeRequestFetcher.refresh = function () {
     cleanMergeRequests();
@@ -132,7 +144,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
                     if (note.upvote) {
                         mergeRequest.upvoters.push(note.author.name);
 
-                        if (note.author.id === user.id) {
+                        if (note.author.id === MergeRequestFetcher.user.id) {
                             mergeRequest.i_have_voted = 1;
                         }
                     }
@@ -140,7 +152,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
                     if (note.downvote) {
                         mergeRequest.downvoters.push(note.author.name);
 
-                        if (note.author.id === user.id) {
+                        if (note.author.id === MergeRequestFetcher.user.id) {
                             mergeRequest.i_have_voted = -1;
                         }
                     }
@@ -175,20 +187,24 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips'])
 
 .controller('MainCtrl', function ($interval, MergeRequestFetcher, appConfig) {
   var vm = this;
+  vm.mode = "all";
+  vm.user = null;
   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
-  var polling = $interval(function () {
-    MergeRequestFetcher.refresh();
-    vm.lastRefresh = new Date();
-  }, appConfig.refreshInterval * 60 * 1000);
+  MergeRequestFetcher.getUser().then(function(user) {
+    vm.user = user;
+  });
 
   vm.refresh = function() {
     MergeRequestFetcher.refresh();
     vm.lastRefresh = new Date();
   };
 
-  MergeRequestFetcher.refresh();
-  vm.lastRefresh = new Date();
+  var polling = $interval(function () {
+    vm.refresh();
+  }, appConfig.refreshInterval * 60 * 1000);
+
+  vm.refresh();
 })
 
 .filter('length', function() {
