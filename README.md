@@ -45,7 +45,7 @@ Then open `http://localhost:3000` in your browser.
 
 ## Credits
 
-Developed by the [Web Team](https://twitter.com/hexanetweb) of [Hexanet](http://www.hexanet.fr/).
+Developed by the [Web Team](https://teamweb.hexanet.fr/) of [Hexanet](http://www.hexanet.fr/).
 
 ### Inspiration
 
