@@ -1,6 +1,6 @@
 # MergeRequestsCI
 
-UI to see all GitLab merge requests of your teams in one place.
+UI to see all GitLab merge requests of your team in one place.
 
 ![MergeRequestsCI](screenshot.png)
 
