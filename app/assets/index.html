@@ -15,6 +15,13 @@
         </div>
         <div class="top-bar-right">
             <ul class="menu">
+                <li class="menu-text">Mode</<li>
+                <li>
+                    <select ng-model="vm.mode">
+                        <option value="all">All</option>
+                        <option value="detailed">Detailed</option>
+                    </select>
+                </li>
                 <li class="menu-text">Last refresh : {{ vm.lastRefresh | date:'shortTime' }}</li>
                 <li><a ng-click="vm.refresh()" class="button">Refresh</a></li>
             </ul>
@@ -22,7 +29,7 @@
       </div>
   </div>
 
-  <div class="row">
+  <div class="row" ng-if="vm.mode == 'all'">
     <table class="twelve columns">
       <thead>
         <tr>
@@ -66,6 +73,53 @@
             <span ng-if="mergeRequest.i_have_voted === 0">-</span>
             <span ng-if="mergeRequest.i_have_voted === 1" ng-bind-html="':+1:'|emojify"></span>
             <span ng-if="mergeRequest.i_have_voted === -1" ng-bind-html="':-1:'|emojify"></span>
+          </td>
+          <td>
+            <a href="{{ mergeRequest.ci.url }}" target="_blank" ng-if="mergeRequest.ci.status" ng-class="{'success': mergeRequest.ci.status == 'success', 'alert': mergeRequest.ci.status == 'failed'}" class="button tiny">{{ mergeRequest.ci.status }}</a>
+          </td>
+        </tr>
+        <tr ng-show="!(vm.mergeRequests | length) > 0">
+          <td colspan="8" class="text-center">
+            No merge request in progress, go back to work!
+          </td>
+        </tr>
+      <tbody>
+    </table>
+  </div>
+
+  <div class="row" ng-if="vm.mode == 'detailed'">
+    <h2>My merge requests</h2>
+    <table class="twelve columns">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Projet</th>
+          <th>Title</th>
+          <th>Branch</th>
+          <th ng-bind-html="':+1:'|emojify"></th>
+          <th ng-bind-html="':-1:'|emojify"></th>
+          <th>CI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="mergeRequest in vm.mergeRequests" ng-if="mergeRequest.author.id == vm.user.id">
+          <td>{{ mergeRequest.lastActivity | date:'short' }}</td>
+          <td><a href="{{ mergeRequest.project.web_url }}" target="_blank">{{ mergeRequest.project.name }}</a></td>
+          <td><a href="{{ mergeRequest.web_url }}" target="_blank" ng-bind-html="mergeRequest.title|emojify"></a></td>
+          <td>{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
+          <td>
+              <span tooltips tooltip-template="{{ mergeRequest.upvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.upvoters.length == 0 }}">
+                  <span ng-class="{'success': mergeRequest.upvotes > 0, 'alert': mergeRequest.upvotes == 0}" class="upvote label">
+                      {{ mergeRequest.upvotes }}
+                  </span>
+              </span>
+          </td>
+          <td>
+              <span tooltips tooltip-template="{{ mergeRequest.downvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.downvoters.length == 0 }}">
+                  <span ng-class="{'success': mergeRequest.downvotes == 0, 'alert': mergeRequest.downvotes > 0}" class="downvote label">
+                      {{ mergeRequest.downvotes }}
+                  </span>
+              </span>
           </td>
           <td>
             <a href="{{ mergeRequest.ci.url }}" target="_blank" ng-if="mergeRequest.ci.status" ng-class="{'success': mergeRequest.ci.status == 'success', 'alert': mergeRequest.ci.status == 'failed'}" class="button tiny">{{ mergeRequest.ci.status }}</a>
