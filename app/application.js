@@ -1,11 +1,25 @@
 "use strict";
 
-angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'angularMoment'])
+angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModule', 'angularMoment'])
 
-.config(function($httpProvider, appConfig) {
-  $httpProvider.defaults.headers.common = {
-    'PRIVATE-TOKEN': appConfig.token
-  };
+.config(function($routeProvider, localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('merge-requests-ci');
+
+  $routeProvider
+    .when('/', {
+      templateUrl: 'dashboard.html',
+      controller: 'DashboardCtrl',
+      controllerAs: 'vm'
+    })
+    .when('/login', {
+      templateUrl: 'login.html',
+      controller: 'LoginCtrl',
+      controllerAs: 'vm'
+    })
+    .otherwise({
+      redirectTo: '/'
+    });
 })
 
 .service('favicoService', function() {
@@ -173,14 +187,21 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'angularMoment
   return MergeRequestFetcher;
 })
 
-.controller('MainCtrl', function ($interval, MergeRequestFetcher, appConfig) {
+.controller('DashboardCtrl', function ($interval, MergeRequestFetcher, $http, localStorageService) {
   var vm = this;
+
+  var apiUrl = localStorageService.get('api_url');
+  var privateToken = localStorageService.get('private_token');
+
+  $http.defaults.headers.common = {
+    'PRIVATE-TOKEN': privateToken
+  };
   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
   var polling = $interval(function () {
     MergeRequestFetcher.refresh();
     vm.lastRefresh = new Date();
-  }, appConfig.refreshInterval * 60 * 1000);
+  }, 5 * 60 * 1000);
 
   vm.refresh = function() {
     MergeRequestFetcher.refresh();
@@ -189,6 +210,17 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'angularMoment
 
   MergeRequestFetcher.refresh();
   vm.lastRefresh = new Date();
+})
+
+.controller('LoginCtrl', function (localStorageService, $location) {
+  var vm = this;
+
+  vm.login = function(config) {
+    localStorageService.set('api_url', config.api_url);
+    localStorageService.set('private_token', config.private_token);
+
+    $location.path("/");
+  }
 })
 
 .filter('length', function() {

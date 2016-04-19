@@ -1,0 +1,7 @@
+<h1>Login</h1>
+
+<form novalidate>
+  <input type='text' ng-model="config.api_url" />
+  <input type='text' ng-model="config.private_token" />
+  <input type="submit" ng-click="vm.login(config)" value="Login" />
+</form>
