@@ -1,7 +1,12 @@
-<h1>Login</h1>
+<div class="row">
+  <div class="small-3 small-centered columns">
+    <h1 class="text-center">Login</h1>
 
-<form novalidate>
-  <input type='text' ng-model="config.api_url" />
-  <input type='text' ng-model="config.private_token" />
-  <input type="submit" ng-click="vm.login(config)" value="Login" />
-</form>
+    <form novalidate>
+      <input type='text' ng-model="config.api_url" placeholder="https://gitlab_instance/api/v3"/>
+      <input type='text' ng-model="config.private_token" placeholder="private token" />
+
+      <input type="submit" class="button expand" ng-click="vm.login(config)" value="Login"/>
+    </form>
+  </div>
+</div>
