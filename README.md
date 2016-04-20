@@ -23,16 +23,6 @@ $ cd MergeRequestsCI
 $ npm install
 ```
 
-## Configuration
-
-Please configure a new `app/config/app.yaml` file from [`app/config/app.yaml.dist`](app/config/app.yaml.dist).
-
-Options :
-
-* **refreshInterval** : time in seconds between 2 dashboard updates
-* **apiUrl** : url of your GitLab API
-* **token** : private token for API calls
-
 ## Run the server
 
 After configuration, you have to build the code and launch the server.
@@ -42,6 +32,12 @@ $ npm run serve
 ```
 
 Then open `http://localhost:3000` in your browser.
+
+At the first connection, you must configure :
+
+* **refreshInterval** : time in seconds between 2 dashboard updates
+* **apiUrl** : url of your GitLab API
+* **token** : private token for API calls
 
 ## Credits
 
