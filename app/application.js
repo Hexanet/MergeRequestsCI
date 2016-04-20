@@ -120,10 +120,25 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     return deferred.promise;
   };
 
-  var getMergeRequests = function(projectId) {
-    var url = '/projects/' + projectId + '/merge_requests?state=opened';
+  var getMergeRequests = function(project) {
+    var url = '/projects/' + project.id + '/merge_requests?state=opened';
     return request(url).then(function(response) {
-      return response.data;
+      var mergeRequests = response.data;
+
+      mergeRequests.map(function(mergeRequest) {
+        mergeRequest.project = {};
+        mergeRequest.project.id = project.id;
+        mergeRequest.project.name = project.name_with_namespace;
+        mergeRequest.project.web_url = project.web_url;
+        mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
+      });
+
+      return $q.all([
+        mergeRequests.map(addVotesToMergeRequest),
+        mergeRequests.map(addCiStatusToMergeRequest)
+      ]).then(function() {
+        return mergeRequests;
+      });
     });
   };
 
@@ -134,24 +149,59 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     });
   };
 
-  var getNotes = function(projectId, mergeRequestId) {
-    var url = '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100';
+  var addVotesToMergeRequest = function(mergeRequest) {
+    var url = '/projects/' + mergeRequest.project.id + '/merge_requests/' + mergeRequest.id + '/notes?per_page=100';
     return request(url).then(function(response) {
-      return response.data;
+      var notes = response.data;
+
+      var lastNote =  _.last(notes);
+      mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
+
+      mergeRequest.upvoters = [];
+      mergeRequest.downvoters = [];
+      mergeRequest.i_have_voted = 0;
+      notes.forEach(function (note) {
+          if (note.upvote) {
+              mergeRequest.upvoters.push(note.author.name);
+
+              if (note.author.id === authenticatedUser.id) {
+                  mergeRequest.i_have_voted = 1;
+              }
+          }
+
+          if (note.downvote) {
+              mergeRequest.downvoters.push(note.author.name);
+
+              if (note.author.id === authenticatedUser.id) {
+                  mergeRequest.i_have_voted = -1;
+              }
+          }
+      });
     });
   };
 
-  var getCommit = function(projectId, branch) {
-    var url = '/projects/' + projectId + '/repository/commits/' + encodeURIComponent(branch);
+  var addCiStatusToMergeRequest = function(mergeRequest) {
+    var url = '/projects/' + mergeRequest.project.id + '/repository/commits/' + encodeURIComponent(mergeRequest.source_branch);
     return request(url).then(function(response) {
-      return response.data;
+      var commit = response.data;
+
+      mergeRequest.ci = {
+        status: commit.status == "not_found" ? null : commit.status
+      };
+
+      return commit.status == "not_found" ? [] : addCiUrlToMergeRequest(mergeRequest, commit);
     });
   };
 
-  var getCommitStatus = function(projectId, commitSha) {
-    var url = '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses';
+  var addCiUrlToMergeRequest = function(mergeRequest, commit) {
+    var url = '/projects/' + mergeRequest.project.id + '/repository/commits/' + commit.id + '/statuses';
     return request(url).then(function(response) {
-      return response.data;
+      var commitStatus = response.data;
+      commitStatus = _.head(commitStatus);
+
+      if(commitStatus) {
+        mergeRequest.ci.url = commitStatus.target_url;
+      }
     });
   };
 
@@ -166,6 +216,10 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     });
   };
 
+  var filterProjects = function(project) {
+    return project.merge_requests_enabled && !project.archived;
+  };
+
   authentificationService.getUser().then(function(user) {
       authenticatedUser = user;
   });
@@ -174,65 +228,16 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     cleanMergeRequests();
 
     getProjects().then(function(projects) {
-      projects = projects.filter(function(project) {
-          return project.merge_requests_enabled && !project.archived;
-      });
+      projects = projects.filter(filterProjects);
 
       projects.forEach(function (project) {
-        getMergeRequests(project.id).then(function (mergeRequests) {
+        getMergeRequests(project).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
-            mergeRequest.project = {};
-            mergeRequest.project.name = project.name_with_namespace;
-            mergeRequest.project.web_url = project.web_url;
-            mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
-
-            getNotes(project.id, mergeRequest.id)
-              .then(function(notes) {
-                var lastNote =  _.last(notes);
-                mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
-
-                mergeRequest.upvoters = [];
-                mergeRequest.downvoters = [];
-                mergeRequest.i_have_voted = 0;
-                notes.forEach(function (note) {
-                    if (note.upvote) {
-                        mergeRequest.upvoters.push(note.author.name);
-
-                        if (note.author.id === authenticatedUser.id) {
-                            mergeRequest.i_have_voted = 1;
-                        }
-                    }
-
-                    if (note.downvote) {
-                        mergeRequest.downvoters.push(note.author.name);
-
-                        if (note.author.id === authenticatedUser.id) {
-                            mergeRequest.i_have_voted = -1;
-                        }
-                    }
-                });
-
-                return getCommit(project.id, mergeRequest.source_branch);
-              }).then(function(commit) {
-                mergeRequest.ci = {
-                  status: commit.status == "not_found" ? null : commit.status
-                };
-
-                return commit.status == "not_found" ? [] : getCommitStatus(project.id, commit.id)
-              }).then(function(commitStatus) {
-                commitStatus = _.head(commitStatus);
-
-                if(commitStatus) {
-                  mergeRequest.ci.url = commitStatus.target_url;
-                }
-
-                MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
-                updateFavico();
-              });
+            MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
+            updateFavico();
           });
         });
       });
-
     });
   };
 
