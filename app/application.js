@@ -22,6 +22,27 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     });
 })
 
+.service('authentificationService', function(localStorageService) {
+
+  this.getPrivateToken = function() {
+    return localStorageService.get('private_token');
+  }
+
+  this.getApiUrl = function() {
+    return localStorageService.get('api_url');
+  }
+
+  this.isAuthentificated = function() {
+    return this.getApiUrl() && this.getPrivateToken();
+  }
+
+  this.authenticate = function(apiUrl, privateToken) {
+    localStorageService.set('api_url', apiUrl);
+    localStorageService.set('private_token', privateToken);
+  }
+
+})
+
 .service('favicoService', function() {
   var favico = new Favico({
     animation : 'fade'
@@ -36,14 +57,14 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   };
 })
 
-.service('gitlabService', function($q, $http, appConfig) {
+.service('gitlabService', function($q, $http, authentificationService) {
   this.getProjects = function() {
     var deferred = $q.defer();
     var projects = [];
 
     function loadProjects(page) {
       $http
-        .get(appConfig.apiUrl + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
+        .get(authentificationService.getApiUrl() + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
         .then(function(response) {
           projects = _.union(projects, response.data);
 
@@ -57,37 +78,37 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   };
 
   this.getUser = function(projectId) {
-    return $http.get(appConfig.apiUrl + '/user').then(function(response) {
+    return $http.get(authentificationService.getApiUrl() + '/user').then(function(response) {
       return response.data;
     });
   };
 
   this.getMergeRequests = function(projectId) {
-    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
+    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
       return response.data;
     });
   };
 
   this.getMergeRequest = function(projectId, mergeRequestId) {
-    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_request/' + mergeRequestId).then(function(response) {
+    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/merge_request/' + mergeRequestId).then(function(response) {
       return response.data;
     });
   };
 
   this.getNotes = function(projectId, mergeRequestId) {
-    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100').then(function(response) {
+    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100').then(function(response) {
       return response.data;
     });
   };
 
   this.getCommit = function(projectId, branch) {
-    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + encodeURIComponent(branch)).then(function(response) {
+    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/repository/commits/' + encodeURIComponent(branch)).then(function(response) {
       return response.data;
     });
   };
 
   this.getCommitStatus = function(projectId, commitSha) {
-    return $http.get(appConfig.apiUrl + '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses').then(function(response) {
+    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses').then(function(response) {
       return response.data;
     });
     };
@@ -189,13 +210,6 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
 
 .controller('DashboardCtrl', function ($interval, MergeRequestFetcher, $http, localStorageService) {
   var vm = this;
-
-  var apiUrl = localStorageService.get('api_url');
-  var privateToken = localStorageService.get('private_token');
-
-  $http.defaults.headers.common = {
-    'PRIVATE-TOKEN': privateToken
-  };
   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
   var polling = $interval(function () {
@@ -212,13 +226,11 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   vm.lastRefresh = new Date();
 })
 
-.controller('LoginCtrl', function (localStorageService, $location) {
+.controller('LoginCtrl', function (authentificationService, $location) {
   var vm = this;
 
   vm.login = function(config) {
-    localStorageService.set('api_url', config.api_url);
-    localStorageService.set('private_token', config.private_token);
-
+    authentificationService.authenticate(config.api_url, config.private_token);
     $location.path("/");
   }
 })
@@ -227,4 +239,20 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   return function(collection) {
     return _.size(collection);
   }
+})
+
+
+.run(function($rootScope, authentificationService, $location, $http) {
+
+  // This events gets triggered on refresh or URL change
+  $rootScope.$on('$locationChangeStart', function() {
+    if (authentificationService.isAuthentificated()) {
+      $http.defaults.headers.common = {
+        'PRIVATE-TOKEN': authentificationService.getPrivateToken()
+      };
+    } else {
+      $location.path('/login');
+    }
+  });
+
 });
