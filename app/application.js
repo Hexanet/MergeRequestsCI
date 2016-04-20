@@ -22,25 +22,52 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     });
 })
 
-.service('authentificationService', function(localStorageService) {
+.service('authentificationService', function(localStorageService, $http, $q) {
+  var authentificationService = {};
 
-  this.getPrivateToken = function() {
+  authentificationService.getPrivateToken = function() {
     return localStorageService.get('private_token');
   }
 
-  this.getApiUrl = function() {
+  authentificationService.getApiUrl = function() {
     return localStorageService.get('api_url');
   }
 
-  this.isAuthentificated = function() {
-    return this.getApiUrl() && this.getPrivateToken();
+  authentificationService.getUser = function() {
+    return $http({
+      url: authentificationService.getApiUrl() + '/user',
+      headers:  {'PRIVATE-TOKEN': this.getPrivateToken()}
+    }).then(function(response) {
+      return response.data;
+    });
   }
 
-  this.authenticate = function(apiUrl, privateToken) {
+  authentificationService.isAuthentificated = function() {
+    return authentificationService.getApiUrl() && authentificationService.getPrivateToken();
+  }
+
+  authentificationService.authenticate = function(apiUrl, privateToken) {
     localStorageService.set('api_url', apiUrl);
     localStorageService.set('private_token', privateToken);
+
+    var deferred = $q.defer();
+
+    authentificationService.getUser().then(function(user) {
+      deferred.resolve(user);
+    }, function() {
+      authentificationService.logout();
+      deferred.reject('Unauthorized');
+    });
+
+    return deferred.promise;
   }
 
+  authentificationService.logout = function() {
+    localStorageService.remove('api_url');
+    localStorageService.remove('private_token');
+  }
+
+  return authentificationService;
 })
 
 .service('favicoService', function() {
@@ -57,14 +84,30 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   };
 })
 
-.service('gitlabService', function($q, $http, authentificationService) {
-  this.getProjects = function() {
+.service('MergeRequestFetcher', function (authentificationService, favicoService, $q, $http) {
+  var MergeRequestFetcher = {};
+  MergeRequestFetcher.mergeRequests = {};
+
+  var authenticatedUser = null;
+
+  var updateFavico = function() {
+    favicoService.badge(Object.keys(MergeRequestFetcher.mergeRequests).length);
+  };
+
+  var request = function (url) {
+    return $http({
+      url: authentificationService.getApiUrl() + url,
+      headers:  {'PRIVATE-TOKEN': authentificationService.getPrivateToken()}
+    });
+  };
+
+  var getProjects = function() {
     var deferred = $q.defer();
     var projects = [];
 
     function loadProjects(page) {
-      $http
-        .get(authentificationService.getApiUrl() + '/projects?order_by=last_activity_at&per_page=100&page=' + page)
+      var url = '/projects?order_by=last_activity_at&per_page=100&page=' + page;
+      request(url)
         .then(function(response) {
           projects = _.union(projects, response.data);
 
@@ -77,54 +120,44 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     return deferred.promise;
   };
 
-  this.getUser = function(projectId) {
-    return $http.get(authentificationService.getApiUrl() + '/user').then(function(response) {
+  var getMergeRequests = function(projectId) {
+    var url = '/projects/' + projectId + '/merge_requests?state=opened';
+    return request(url).then(function(response) {
       return response.data;
     });
   };
 
-  this.getMergeRequests = function(projectId) {
-    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/merge_requests?state=opened').then(function(response) {
+  var getMergeRequest = function(projectId, mergeRequestId) {
+    var url = '/projects/' + projectId + '/merge_request/' + mergeRequestId;
+    return request(url).then(function(response) {
       return response.data;
     });
   };
 
-  this.getMergeRequest = function(projectId, mergeRequestId) {
-    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/merge_request/' + mergeRequestId).then(function(response) {
+  var getNotes = function(projectId, mergeRequestId) {
+    var url = '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100';
+    return request(url).then(function(response) {
       return response.data;
     });
   };
 
-  this.getNotes = function(projectId, mergeRequestId) {
-    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/merge_requests/' + mergeRequestId + '/notes?per_page=100').then(function(response) {
+  var getCommit = function(projectId, branch) {
+    var url = '/projects/' + projectId + '/repository/commits/' + encodeURIComponent(branch);
+    return request(url).then(function(response) {
       return response.data;
     });
   };
 
-  this.getCommit = function(projectId, branch) {
-    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/repository/commits/' + encodeURIComponent(branch)).then(function(response) {
+  var getCommitStatus = function(projectId, commitSha) {
+    var url = '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses';
+    return request(url).then(function(response) {
       return response.data;
     });
-  };
-
-  this.getCommitStatus = function(projectId, commitSha) {
-    return $http.get(authentificationService.getApiUrl() + '/projects/' + projectId + '/repository/commits/' + commitSha + '/statuses').then(function(response) {
-      return response.data;
-    });
-    };
-})
-
-.service('MergeRequestFetcher', function (gitlabService, favicoService) {
-  var MergeRequestFetcher = {};
-  MergeRequestFetcher.mergeRequests = {};
-
-  var updateFavico = function() {
-    favicoService.badge(Object.keys(MergeRequestFetcher.mergeRequests).length);
   };
 
   var cleanMergeRequests = function() {
     angular.forEach(MergeRequestFetcher.mergeRequests, function(mergeRequest, id) {
-      gitlabService.getMergeRequest(mergeRequest.project_id, id).then(function(mergeRequestData) {
+      getMergeRequest(mergeRequest.project_id, id).then(function(mergeRequestData) {
         if (mergeRequestData.state === 'closed' || mergeRequestData.state === 'merged') {
           delete MergeRequestFetcher.mergeRequests[id];
           updateFavico();
@@ -133,29 +166,27 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     });
   };
 
-  var user = null;
-  gitlabService.getUser().then(function(userData) {
-    user = userData;
+  authentificationService.getUser().then(function(user) {
+      authenticatedUser = user;
   });
 
   MergeRequestFetcher.refresh = function () {
     cleanMergeRequests();
 
-    gitlabService.getProjects().then(function(projects) {
+    getProjects().then(function(projects) {
       projects = projects.filter(function(project) {
           return project.merge_requests_enabled && !project.archived;
       });
 
       projects.forEach(function (project) {
-        gitlabService.getMergeRequests(project.id).then(function (mergeRequests) {
+        getMergeRequests(project.id).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
             mergeRequest.project = {};
             mergeRequest.project.name = project.name_with_namespace;
             mergeRequest.project.web_url = project.web_url;
             mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
 
-            gitlabService
-              .getNotes(project.id, mergeRequest.id)
+            getNotes(project.id, mergeRequest.id)
               .then(function(notes) {
                 var lastNote =  _.last(notes);
                 mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
@@ -167,7 +198,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
                     if (note.upvote) {
                         mergeRequest.upvoters.push(note.author.name);
 
-                        if (note.author.id === user.id) {
+                        if (note.author.id === authenticatedUser.id) {
                             mergeRequest.i_have_voted = 1;
                         }
                     }
@@ -175,19 +206,19 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
                     if (note.downvote) {
                         mergeRequest.downvoters.push(note.author.name);
 
-                        if (note.author.id === user.id) {
+                        if (note.author.id === authenticatedUser.id) {
                             mergeRequest.i_have_voted = -1;
                         }
                     }
                 });
 
-                return gitlabService.getCommit(project.id, mergeRequest.source_branch);
+                return getCommit(project.id, mergeRequest.source_branch);
               }).then(function(commit) {
                 mergeRequest.ci = {
                   status: commit.status == "not_found" ? null : commit.status
                 };
 
-                return commit.status == "not_found" ? [] : gitlabService.getCommitStatus(project.id, commit.id)
+                return commit.status == "not_found" ? [] : getCommitStatus(project.id, commit.id)
               }).then(function(commitStatus) {
                 commitStatus = _.head(commitStatus);
 
@@ -208,7 +239,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   return MergeRequestFetcher;
 })
 
-.controller('DashboardCtrl', function ($interval, MergeRequestFetcher, $http, localStorageService) {
+.controller('DashboardCtrl', function ($interval, MergeRequestFetcher) {
   var vm = this;
   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
@@ -241,16 +272,11 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   }
 })
 
-
 .run(function($rootScope, authentificationService, $location, $http) {
 
   // This events gets triggered on refresh or URL change
   $rootScope.$on('$locationChangeStart', function() {
-    if (authentificationService.isAuthentificated()) {
-      $http.defaults.headers.common = {
-        'PRIVATE-TOKEN': authentificationService.getPrivateToken()
-      };
-    } else {
+    if (!authentificationService.isAuthentificated()) {
       $location.path('/login');
     }
   });
