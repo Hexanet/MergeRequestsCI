@@ -1,9 +1,0 @@
-development:
-  apiUrl: https://GITLAB/api/v3
-  token:
-  refreshInterval: 5
-
-production:
-  apiUrl: https://GITLAB/api/v3
-  token:
-  refreshInterval: 5
