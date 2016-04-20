@@ -259,10 +259,18 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
 
 .controller('LoginCtrl', function (authentificationService, $location) {
   var vm = this;
+  vm.error = false;
 
   vm.login = function(config) {
-    authentificationService.authenticate(config.api_url, config.private_token);
-    $location.path("/");
+    authentificationService.authenticate(
+      config.api_url,
+      config.private_token
+    ).then(function success() {
+      $location.path("/");
+    }, function failure() {
+      vm.error = true;
+    });
+
   }
 })
 
