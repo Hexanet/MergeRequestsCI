@@ -12,9 +12,9 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
       controller: 'DashboardCtrl',
       controllerAs: 'vm'
     })
-    .when('/login', {
-      templateUrl: 'login.html',
-      controller: 'LoginCtrl',
+    .when('/settings', {
+      templateUrl: 'settings.html',
+      controller: 'SettingsCtrl',
       controllerAs: 'vm'
     })
     .otherwise({
@@ -22,52 +22,60 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     });
 })
 
-.service('authentificationService', function(localStorageService, $http, $q) {
-  var authentificationService = {};
+.service('gitLabManager', function(localStorageService, $http, $q) {
+  var gitLabManager = {};
 
-  authentificationService.getPrivateToken = function() {
+  gitLabManager.getPrivateToken = function() {
     return localStorageService.get('private_token');
   }
 
-  authentificationService.getApiUrl = function() {
-    return localStorageService.get('api_url');
+  gitLabManager.getUrl = function() {
+    return localStorageService.get('url');
   }
 
-  authentificationService.getUser = function() {
+  gitLabManager.getRefreshRate = function() {
+    return localStorageService.get('refresh_rate');
+  }
+
+  gitLabManager.setRefreshRate = function(refreshRate) {
+    localStorageService.set('refresh_rate', refreshRate);
+  }
+
+  gitLabManager.getUser = function() {
     return $http({
-      url: authentificationService.getApiUrl() + '/user',
+      url: gitLabManager.getUrl() + '/api/v3/user',
       headers:  {'PRIVATE-TOKEN': this.getPrivateToken()}
     }).then(function(response) {
       return response.data;
     });
   }
 
-  authentificationService.isAuthentificated = function() {
-    return authentificationService.getApiUrl() && authentificationService.getPrivateToken();
+  gitLabManager.isAuthentificated = function() {
+    return gitLabManager.getUrl() && gitLabManager.getPrivateToken();
   }
 
-  authentificationService.authenticate = function(apiUrl, privateToken) {
-    localStorageService.set('api_url', apiUrl);
+  gitLabManager.authenticate = function(url, privateToken) {
+    localStorageService.set('url', url);
     localStorageService.set('private_token', privateToken);
 
     var deferred = $q.defer();
 
-    authentificationService.getUser().then(function(user) {
+    gitLabManager.getUser().then(function(user) {
       deferred.resolve(user);
     }, function() {
-      authentificationService.logout();
+      gitLabManager.logout();
       deferred.reject('Unauthorized');
     });
 
     return deferred.promise;
   }
 
-  authentificationService.logout = function() {
-    localStorageService.remove('api_url');
+  gitLabManager.logout = function() {
+    localStorageService.remove('url');
     localStorageService.remove('private_token');
   }
 
-  return authentificationService;
+  return gitLabManager;
 })
 
 .service('favicoService', function() {
@@ -84,7 +92,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   };
 })
 
-.service('MergeRequestFetcher', function (authentificationService, favicoService, $q, $http) {
+.service('MergeRequestFetcher', function (gitLabManager, favicoService, $q, $http) {
   var MergeRequestFetcher = {};
   MergeRequestFetcher.mergeRequests = {};
 
@@ -96,8 +104,8 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
 
   var request = function (url) {
     return $http({
-      url: authentificationService.getApiUrl() + url,
-      headers:  {'PRIVATE-TOKEN': authentificationService.getPrivateToken()}
+      url: gitLabManager.getUrl() + '/api/v3/' + url,
+      headers:  {'PRIVATE-TOKEN': gitLabManager.getPrivateToken()}
     });
   };
 
@@ -220,7 +228,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
     return project.merge_requests_enabled && !project.archived;
   };
 
-  authentificationService.getUser().then(function(user) {
+  gitLabManager.getUser().then(function(user) {
       authenticatedUser = user;
   });
 
@@ -244,33 +252,36 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   return MergeRequestFetcher;
 })
 
-.controller('DashboardCtrl', function ($interval, MergeRequestFetcher) {
+.controller('DashboardCtrl', function ($interval, MergeRequestFetcher, gitLabManager) {
   var vm = this;
   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
   var polling = $interval(function () {
     MergeRequestFetcher.refresh();
-    vm.lastRefresh = new Date();
-  }, 5 * 60 * 1000);
+  }, gitLabManager.getRefreshRate() * 60 * 1000);
 
   vm.refresh = function() {
     MergeRequestFetcher.refresh();
-    vm.lastRefresh = new Date();
   };
 
   MergeRequestFetcher.refresh();
-  vm.lastRefresh = new Date();
 })
 
-.controller('LoginCtrl', function (authentificationService, $location) {
+.controller('SettingsCtrl', function (gitLabManager, $location) {
   var vm = this;
   vm.error = false;
+  vm.config = {
+    url: gitLabManager.getUrl(),
+    private_token: gitLabManager.getPrivateToken(),
+    refresh_rate: gitLabManager.getRefreshRate() || 5
+  };
 
-  vm.login = function(config) {
-    authentificationService.authenticate(
-      config.api_url,
+  vm.save = function(config) {
+    gitLabManager.authenticate(
+      config.url,
       config.private_token
     ).then(function success() {
+      gitLabManager.setRefreshRate(config.refresh_rate);
       $location.path("/");
     }, function failure() {
       vm.error = true;
@@ -285,12 +296,12 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   }
 })
 
-.run(function($rootScope, authentificationService, $location, $http) {
+.run(function($rootScope, gitLabManager, $location, $http) {
 
   // This events gets triggered on refresh or URL change
   $rootScope.$on('$locationChangeStart', function() {
-    if (!authentificationService.isAuthentificated()) {
-      $location.path('/login');
+    if (!gitLabManager.isAuthentificated()) {
+      $location.path('/settings');
     }
   });
 

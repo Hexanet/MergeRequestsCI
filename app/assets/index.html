@@ -6,8 +6,25 @@
   <link rel="shortcut icon" type="image/png" href="favicon.ico" />
   <link rel="stylesheet" href="app.css">
 </head>
-<body ng-controller='LoginCtrl as vm'>
-  <div ng-view></div>
+<body>
+  <div class="top-bar">
+      <div class="top-bar-left">
+          <ul class="dropdown menu" data-dropdown-menu>
+              <li class="menu-text title"><img src="logo.png" /> Merge Request CI</li>
+          </ul>
+      </div>
+      <div class="top-bar-right">
+          <ul class="menu">
+              <li><a href="/#/settings">Settings</a></li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" ng-view>
+
+  </div>
+
 
   <script src="vendor.js"></script>
   <script src="app.js"></script>

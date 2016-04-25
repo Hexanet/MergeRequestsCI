@@ -1,0 +1,25 @@
+<div class="columns">
+  <h1>Settings</h1>
+
+  <p ng-show="vm.error">
+    Authentication failed: please verify your url and private token
+  </p>
+
+  <form novalidate>
+    <label>GitLab url
+      <input type='url' ng-model="vm.config.url" placeholder="https://gitlab_instance"/>
+    </label>
+    <label>Private token
+      <input type='text' ng-model="vm.config.private_token" placeholder="" />
+    </label>
+    <p class="help-text">
+      Token to authenticate you against GitLab.
+      <span ng-show="config.url"><br /><a href="{{ config.url }}/profile/account">Click here</a> to get your private token.</span>
+    </p>
+    <label>Refresh rate (minutes)
+      <input type='text' ng-model="vm.config.refresh_rate" />
+    </label>
+
+    <input type="submit" class="button expand" ng-click="vm.save(vm.config)" value="Save"/>
+  </form>
+</div>

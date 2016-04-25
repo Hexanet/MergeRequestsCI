@@ -1,72 +1,55 @@
-<div class="top-bar">
-    <div class="top-bar-left">
-        <ul class="dropdown menu" data-dropdown-menu>
-            <li class="menu-text title"><img src="logo.png" /> Merge Request CI</li>
-        </ul>
-    </div>
-    <div class="top-bar-right">
-        <ul class="menu">
-            <li class="menu-text">Last refresh : {{ vm.lastRefresh | date:'shortTime' }}</li>
-            <li><a ng-click="vm.refresh()" class="button">Refresh</a></li>
-        </ul>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <table class="twelve columns">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Projet</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Branch</th>
-        <th ng-bind-html="':+1:'|emojify"></th>
-        <th ng-bind-html="':-1:'|emojify"></th>
-        <th>Have I voted?</th>
-        <th>CI</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="mergeRequest in vm.mergeRequests">
-        <td>{{ mergeRequest.lastActivity | date:'short' }}</td>
-        <td><a href="{{ mergeRequest.project.web_url }}" target="_blank">{{ mergeRequest.project.name }}</a></td>
-        <td><a href="{{ mergeRequest.web_url }}" target="_blank" ng-bind-html="mergeRequest.title|emojify"></a></td>
-        <td>
-            <span tooltips tooltip-template="{{ mergeRequest.author.name }}" tooltip-size="small">
-                <img class="author" ng-src="{{ mergeRequest.author.avatar_url }}" width="35px" alt="{{ mergeRequest.author.name }}"></img>
-            </span>
-        </td>
-        <td>{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
-        <td>
-            <span tooltips tooltip-template="{{ mergeRequest.upvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.upvoters.length == 0 }}">
-                <span ng-class="{'success': mergeRequest.upvotes > 0, 'alert': mergeRequest.upvotes == 0}" class="upvote label">
-                    {{ mergeRequest.upvotes }}
-                </span>
-            </span>
-        </td>
-        <td>
-            <span tooltips tooltip-template="{{ mergeRequest.downvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.downvoters.length == 0 }}">
-                <span ng-class="{'success': mergeRequest.downvotes == 0, 'alert': mergeRequest.downvotes > 0}" class="downvote label">
-                    {{ mergeRequest.downvotes }}
-                </span>
-            </span>
-        </td>
-        <td>
-          <span ng-if="mergeRequest.i_have_voted === 0">-</span>
-          <span ng-if="mergeRequest.i_have_voted === 1" ng-bind-html="':+1:'|emojify"></span>
-          <span ng-if="mergeRequest.i_have_voted === -1" ng-bind-html="':-1:'|emojify"></span>
-        </td>
-        <td>
-          <a href="{{ mergeRequest.ci.url }}" target="_blank" ng-if="mergeRequest.ci.status" ng-class="{'success': mergeRequest.ci.status == 'success', 'alert': mergeRequest.ci.status == 'failed'}" class="button tiny">{{ mergeRequest.ci.status }}</a>
-        </td>
-      </tr>
-      <tr ng-show="!(vm.mergeRequests | length) > 0">
-        <td colspan="8" class="text-center">
-          No merge request in progress, go back to work!
-        </td>
-      </tr>
-    <tbody>
-  </table>
-</div>
+<table class="twelve columns">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Projet</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Branch</th>
+      <th ng-bind-html="':+1:'|emojify"></th>
+      <th ng-bind-html="':-1:'|emojify"></th>
+      <th>Have I voted?</th>
+      <th>CI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="mergeRequest in vm.mergeRequests">
+      <td>{{ mergeRequest.lastActivity | date:'short' }}</td>
+      <td><a href="{{ mergeRequest.project.web_url }}" target="_blank">{{ mergeRequest.project.name }}</a></td>
+      <td><a href="{{ mergeRequest.web_url }}" target="_blank" ng-bind-html="mergeRequest.title|emojify"></a></td>
+      <td>
+          <span tooltips tooltip-template="{{ mergeRequest.author.name }}" tooltip-size="small">
+              <img class="author" ng-src="{{ mergeRequest.author.avatar_url }}" width="35px" alt="{{ mergeRequest.author.name }}"></img>
+          </span>
+      </td>
+      <td>{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
+      <td>
+          <span tooltips tooltip-template="{{ mergeRequest.upvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.upvoters.length == 0 }}">
+              <span ng-class="{'success': mergeRequest.upvotes > 0, 'alert': mergeRequest.upvotes == 0}" class="upvote label">
+                  {{ mergeRequest.upvotes }}
+              </span>
+          </span>
+      </td>
+      <td>
+          <span tooltips tooltip-template="{{ mergeRequest.downvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.downvoters.length == 0 }}">
+              <span ng-class="{'success': mergeRequest.downvotes == 0, 'alert': mergeRequest.downvotes > 0}" class="downvote label">
+                  {{ mergeRequest.downvotes }}
+              </span>
+          </span>
+      </td>
+      <td>
+        <span ng-if="mergeRequest.i_have_voted === 0">-</span>
+        <span ng-if="mergeRequest.i_have_voted === 1" ng-bind-html="':+1:'|emojify"></span>
+        <span ng-if="mergeRequest.i_have_voted === -1" ng-bind-html="':-1:'|emojify"></span>
+      </td>
+      <td>
+        <a href="{{ mergeRequest.ci.url }}" target="_blank" ng-if="mergeRequest.ci.status" ng-class="{'success': mergeRequest.ci.status == 'success', 'alert': mergeRequest.ci.status == 'failed'}" class="button tiny">{{ mergeRequest.ci.status }}</a>
+      </td>
+    </tr>
+    <tr ng-show="!(vm.mergeRequests | length) > 0">
+      <td colspan="8" class="text-center">
+        No merge request in progress, go back to work!
+      </td>
+    </tr>
+  <tbody>
+</table>
