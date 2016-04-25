@@ -2,6 +2,7 @@
   "name": "MergeRequestsCI",
   "version": "0.1.0",
   "private": true,
+  "licence": "MIT",
   "devDependencies": {
     "brunch": "^2.0.1",
     "bower": "^1.6.0",
