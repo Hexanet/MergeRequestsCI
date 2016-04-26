@@ -267,7 +267,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
   MergeRequestFetcher.refresh();
 })
 
-.controller('SettingsCtrl', function (gitLabManager, $location) {
+.controller('SettingsCtrl', function (gitLabManager, $location, MergeRequestFetcher) {
   var vm = this;
   vm.error = false;
   vm.config = {
@@ -282,6 +282,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
       config.private_token
     ).then(function success() {
       gitLabManager.setRefreshRate(config.refresh_rate);
+      MergeRequestFetcher.mergeRequests = {};
       $location.path("/");
     }, function failure() {
       vm.error = true;
