@@ -27,11 +27,8 @@
     "angular-emojify": "https://github.com/emilol/angular-emojify.git#89a877f",
     "emojify.js": "~1.1.0",
     "angular-tooltips": "~1.0.7",
-<<<<<<< 653969999bb1aa75bca6081f70cdd33b8055da4c
-    "angular-moment": "^0.10.3"
-=======
+    "angular-moment": "^0.10.3",
     "angular-local-storage": "^0.2.7"
->>>>>>> Remove config system and add page to "login"
   },
   "overrides": {
     "angular-i18n": {
