@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModule', 'angularMoment'])
+angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModule', 'angularMoment'])
 
 .config(function($routeProvider, localStorageServiceProvider) {
   localStorageServiceProvider
