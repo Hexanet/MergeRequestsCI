@@ -14,7 +14,7 @@
     </label>
     <p class="help-text">
       Token to authenticate you against GitLab.
-      <span ng-show="config.url"><br /><a href="{{ config.url }}/profile/account">Click here</a> to get your private token.</span>
+      <span ng-show="vm.config.url"><br /><a href="{{ vm.config.url }}/profile/account" target="_blank">Click here</a> to get your private token.</span>
     </p>
     <label>Refresh rate (minutes)
       <input type='text' ng-model="vm.config.refresh_rate" />
