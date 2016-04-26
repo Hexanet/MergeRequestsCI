@@ -104,7 +104,7 @@ angular.module('app', ['config.app', 'emojify', '720kb.tooltips', 'ngRoute', 'Lo
 
   var request = function (url) {
     return $http({
-      url: gitLabManager.getUrl() + '/api/v3/' + url,
+      url: gitLabManager.getUrl() + '/api/v3' + url,
       headers:  {'PRIVATE-TOKEN': gitLabManager.getPrivateToken()}
     });
   };
