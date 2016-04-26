@@ -7,7 +7,7 @@ pages:
 
   script:
   - npm install
-  - npm run bower -- install
+  - npm run bower -- install --allow-root
   - npm run brunch -- b --production
   artifacts:
     paths:
