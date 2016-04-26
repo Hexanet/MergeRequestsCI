@@ -23,7 +23,8 @@
     "angular-i18n": "~1.4.8",
     "angular-emojify": "https://github.com/emilol/angular-emojify.git#89a877f",
     "emojify.js": "~1.1.0",
-    "angular-tooltips": "~1.0.7"
+    "angular-tooltips": "~1.0.7",
+    "angular-moment": "^0.10.3"
   },
   "overrides": {
     "angular-i18n": {
