@@ -2,9 +2,9 @@
   "name": "MergeRequestsCI",
   "version": "0.1.0",
   "private": true,
+  "licence": "MIT",
   "devDependencies": {
     "brunch": "^2.0.1",
-    "constangular-brunch": "^0.1.4",
     "bower": "^1.6.0",
     "javascript-brunch": "^1.8.0",
     "sass-brunch": "^1.9.2",

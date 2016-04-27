@@ -2,7 +2,9 @@
   "name": "merge-requests-ci",
   "homepage": "https://github.com/Hexanet/MergeRequestsCI",
   "authors": [
-    "Floran Brutel <f.brutel@hexanet.fr>"
+    "Floran Brutel <f.brutel@hexanet.fr>",
+    "Nicolas Hart <n.hart@hexanet.fr>",
+    "Damien Martin <d.martin@hexanet.fr>"
   ],
   "description": "",
   "main": "",
@@ -21,10 +23,12 @@
     "favico.js": "~0.3.10",
     "lodash": "~3.10.1",
     "angular-i18n": "~1.4.8",
+    "angular-route": "~1.4.8",
     "angular-emojify": "https://github.com/emilol/angular-emojify.git#89a877f",
     "emojify.js": "~1.1.0",
     "angular-tooltips": "~1.0.7",
-    "angular-moment": "^0.10.3"
+    "angular-moment": "^0.10.3",
+    "angular-local-storage": "^0.2.7"
   },
   "overrides": {
     "angular-i18n": {

@@ -1,4 +1,6 @@
 module.exports = config:
+  npm:
+    enabled: false
   modules:
     definition: false
     wrapper: false

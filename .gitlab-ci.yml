@@ -1,0 +1,16 @@
+image: node:5.11
+
+pages:
+  cache:
+    paths:
+    - node_modules/
+
+  script:
+  - npm install
+  - npm run bower -- install --allow-root
+  - npm run brunch -- b --production
+  artifacts:
+    paths:
+    - public
+#  only:
+#  - master
