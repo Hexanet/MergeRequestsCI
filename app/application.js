@@ -139,6 +139,7 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
         mergeRequest.project.name = project.name_with_namespace;
         mergeRequest.project.web_url = project.web_url;
         mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
+        mergeRequest.lastActivity = mergeRequest.updated_at;
       });
 
       return $q.all([
@@ -161,9 +162,6 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
     var url = '/projects/' + mergeRequest.project.id + '/merge_requests/' + mergeRequest.id + '/notes?per_page=100';
     return request(url).then(function(response) {
       var notes = response.data;
-
-      var lastNote =  _.last(notes);
-      mergeRequest.lastActivity = lastNote ? lastNote.created_at : mergeRequest.updated_at;
 
       mergeRequest.upvoters = [];
       mergeRequest.downvoters = [];
