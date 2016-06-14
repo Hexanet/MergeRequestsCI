@@ -192,22 +192,9 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
       var commit = response.data;
 
       mergeRequest.ci = {
-        status: commit.status == "not_found" ? null : commit.status
+        status: commit.status == "not_found" ? null : commit.status,
+        url: mergeRequest.web_url + '/builds'
       };
-
-      return commit.status == "not_found" ? [] : addCiUrlToMergeRequest(mergeRequest, commit);
-    });
-  };
-
-  var addCiUrlToMergeRequest = function(mergeRequest, commit) {
-    var url = '/projects/' + mergeRequest.project.id + '/repository/commits/' + commit.id + '/statuses';
-    return request(url).then(function(response) {
-      var commitStatus = response.data;
-      commitStatus = _.head(commitStatus);
-
-      if(commitStatus) {
-        mergeRequest.ci.url = commitStatus.target_url;
-      }
     });
   };
 
