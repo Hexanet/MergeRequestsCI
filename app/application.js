@@ -159,26 +159,27 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
   };
 
   var addVotesToMergeRequest = function(mergeRequest) {
-    var url = '/projects/' + mergeRequest.project.id + '/merge_requests/' + mergeRequest.id + '/notes?per_page=100';
+    var url = '/projects/' + mergeRequest.project.id + '/merge_requests/' + mergeRequest.id + '/award_emoji?per_page=100';
     return request(url).then(function(response) {
-      var notes = response.data;
+      var awards = response.data;
 
       mergeRequest.upvoters = [];
       mergeRequest.downvoters = [];
       mergeRequest.i_have_voted = 0;
-      notes.forEach(function (note) {
-          if (note.upvote) {
-              mergeRequest.upvoters.push(note.author.name);
+      awards.forEach(function (award) {
 
-              if (note.author.id === authenticatedUser.id) {
+          if (award.name === 'thumbsup') {
+              mergeRequest.upvoters.push(award.user.name);
+
+              if (award.user.id === authenticatedUser.id) {
                   mergeRequest.i_have_voted = 1;
               }
           }
 
-          if (note.downvote) {
-              mergeRequest.downvoters.push(note.author.name);
+          if (award.name === 'thumbsdown') {
+              mergeRequest.downvoters.push(award.user.name);
 
-              if (note.author.id === authenticatedUser.id) {
+              if (award.user.id === authenticatedUser.id) {
                   mergeRequest.i_have_voted = -1;
               }
           }
