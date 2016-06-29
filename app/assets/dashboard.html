@@ -25,14 +25,14 @@
       <td>{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
       <td>
           <span tooltips tooltip-template="{{ mergeRequest.upvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.upvoters.length == 0 }}">
-              <span ng-class="{'success': mergeRequest.upvotes > 0, 'alert': mergeRequest.upvotes == 0}" class="upvote label">
+              <span ng-class="{'success': mergeRequest.upvotes > 0, 'alert': mergeRequest.upvotes == 0}" class="upvote badge">
                   {{ mergeRequest.upvotes }}
               </span>
           </span>
       </td>
       <td>
           <span tooltips tooltip-template="{{ mergeRequest.downvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.downvoters.length == 0 }}">
-              <span ng-class="{'success': mergeRequest.downvotes == 0, 'alert': mergeRequest.downvotes > 0}" class="downvote label">
+              <span ng-class="{'success': mergeRequest.downvotes == 0, 'alert': mergeRequest.downvotes > 0}" class="downvote badge">
                   {{ mergeRequest.downvotes }}
               </span>
           </span>
@@ -51,5 +51,5 @@
         No merge request in progress, go back to work!
       </td>
     </tr>
-  <tbody>
+  </tbody>
 </table>

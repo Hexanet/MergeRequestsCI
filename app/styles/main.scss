@@ -18,13 +18,29 @@ table {
 }
 
 .top-bar {
+    color: $tertiary-color;
 
-    margin-bottom: 2em;
+    margin-bottom: 4em;
+    border-bottom: 3px solid $secondary-color;
 
     .menu-text.title {
         padding-top: 0;
         padding-bottom: 0;
         font-size: 2em;
+        font-weight: 400;
+    }
+
+    .logo {
+        height: 40px;
+        margin-right: 10px;
+    }
+
+    .menu a {
+        &:hover {
+            color: $tertiary-color;
+        }
+
+        color: $secondary-color;
     }
 }
 
@@ -34,4 +50,26 @@ tooltip {
 
 .author, .downvote, .upvote {
     cursor: help;
+}
+
+table {
+
+    & > tbody {
+        border: none;
+
+        .badge {
+            font-size: 11px;
+        }
+    }
+
+    & > thead {
+        border: none;
+
+        & > tr > th {
+
+            text-transform: uppercase;
+            font-weight: 400;
+            border-bottom: 2px solid smart-scale($table-background, $table-color-scale)
+        }
+    }
 }
