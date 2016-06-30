@@ -70,11 +70,14 @@ table {
     & > thead {
         border: none;
 
-        & > tr > th {
-
+         th {
             text-transform: uppercase;
             font-weight: 400;
             border-bottom: 2px solid smart-scale($table-background, $table-color-scale)
         }
     }
+}
+
+.author {
+    @extend .thumbnail;
 }
