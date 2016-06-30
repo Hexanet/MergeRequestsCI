@@ -28,6 +28,11 @@ table {
         padding-bottom: 0;
         font-size: 2em;
         font-weight: 400;
+
+        a {
+            color: inherit;
+            padding: 0;
+        }
     }
 
     .logo {
