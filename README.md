@@ -45,7 +45,7 @@ Developed by the [Web Team](https://teamweb.hexanet.fr/) of [Hexanet](http://www
 
 ### Inspiration
 
-Thanks [M6Web](https://github.com/M6Web) ([Github Team Reviewer](https://github.com/M6Web/GithubTeamReviewer)) and [Jean-François Lépine](http://blog.lepine.pro/) ([Taylorisme de la qualité logicielle](http://slides.com/halleck/taylorisme-de-la-qualite-logicielle)).
+Thanks [M6Web](https://github.com/M6Web) ([Github Team Reviewer](https://github.com/M6Web/GithubTeamReviewer)) and [Jean-François Lépine](http://blog.lepine.pro/) ([Taylorisme de la qualité logicielle](http://lanyrd.com/2015/forumphp/sdwzzb/)).
 
 ## License
 
