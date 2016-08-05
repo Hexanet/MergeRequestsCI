@@ -44,7 +44,7 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
   gitLabManager.getUser = function() {
     var deferred = $q.defer();
 
-    if (!gitLabManager.isAuthentificated()) {
+    if (!gitLabManager.hasCredentials()) {
       deferred.reject("Url and/or private token are missing");
     } else {
       $http({
@@ -60,7 +60,7 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
     return deferred.promise;
   }
 
-  gitLabManager.isAuthentificated = function() {
+  gitLabManager.hasCredentials = function() {
     return gitLabManager.getUrl() && gitLabManager.getPrivateToken();
   }
 
@@ -297,7 +297,7 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
 
   // This events gets triggered on refresh or URL change
   $rootScope.$on('$locationChangeStart', function() {
-    if (!gitLabManager.isAuthentificated()) {
+    if (!gitLabManager.hasCredentials()) {
       $location.path('/settings');
     }
   });
