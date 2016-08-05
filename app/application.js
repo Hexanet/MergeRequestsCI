@@ -42,12 +42,22 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
   }
 
   gitLabManager.getUser = function() {
-    return $http({
-      url: gitLabManager.getUrl() + '/api/v3/user',
-      headers:  {'PRIVATE-TOKEN': this.getPrivateToken()}
-    }).then(function(response) {
-      return response.data;
-    });
+    var deferred = $q.defer();
+
+    if (!gitLabManager.isAuthentificated()) {
+      deferred.reject("Url and/or private token are missing");
+    } else {
+      $http({
+        url: gitLabManager.getUrl() + '/api/v3/user',
+        headers:  {'PRIVATE-TOKEN': this.getPrivateToken()}
+      }).then(function(response) {
+        deferred.resolve(response.data);
+      }, function(msg) {
+        deferred.reject(msg);
+      });
+    }
+
+    return deferred.promise;
   }
 
   gitLabManager.isAuthentificated = function() {
