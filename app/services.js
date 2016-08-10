@@ -30,7 +30,7 @@ angular.module('app')
   }
 
   configManager.displayBranchColumn = function() {
-    return localStorageService.get('display_branch_column') || true;
+    return _.defaultTo(localStorageService.get('display_branch_column'), true);
   }
 
   configManager.setDisplayBranchColumn= function(displayBranchColumn) {
