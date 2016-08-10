@@ -20,6 +20,13 @@
       <input type='text' ng-model="vm.config.refresh_rate" />
     </label>
 
+    <label>Display the "Branch" column
+      <input type='radio' ng-model="vm.config.display_branch_column" ng-value="true" />
+      Yes
+      <input type="radio" ng-model="vm.config.display_branch_column" ng-value="false" >
+      No
+    </label>
+
     <input type="submit" class="button expand" ng-click="vm.save(vm.config)" value="Save"/>
   </form>
 </div>

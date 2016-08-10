@@ -5,7 +5,7 @@
       <th>Projet</th>
       <th>Title</th>
       <th>Author</th>
-      <th>Branch</th>
+      <th ng-if="vm.displayBranchColumn">Branch</th>
       <th ng-bind-html="':+1:'|emojify"></th>
       <th ng-bind-html="':-1:'|emojify"></th>
       <th class="text-center">Have I voted?</th>
@@ -22,7 +22,7 @@
               <img class="author" ng-src="{{ mergeRequest.author.avatar_url }}" width="35px" alt="{{ mergeRequest.author.name }}"></img>
           </span>
       </td>
-      <td>{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
+      <td ng-if="vm.displayBranchColumn">{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
       <td class="text-center">
           <span tooltips tooltip-template="{{ mergeRequest.upvoters.join(', ') }}" tooltip-size="small" tooltip-hidden="{{ mergeRequest.upvoters.length == 0 }}">
               <span ng-class="{'success': mergeRequest.upvotes > 0, 'alert': mergeRequest.upvotes == 0}" class="upvote badge">
