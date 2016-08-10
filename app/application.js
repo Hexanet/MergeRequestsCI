@@ -102,14 +102,16 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
   };
 })
 
-.service('MergeRequestFetcher', function (gitLabManager, favicoService, $q, $http) {
+.service('MergeRequestFetcher', function (gitLabManager, favicoService, $q, $http, $rootScope) {
   var MergeRequestFetcher = {};
   MergeRequestFetcher.mergeRequests = {};
 
   var authenticatedUser = null;
 
-  var updateFavico = function() {
-    favicoService.badge(Object.keys(MergeRequestFetcher.mergeRequests).length);
+  var updateNumberOfMergeRequests = function() {
+    var number = Object.keys(MergeRequestFetcher.mergeRequests).length;
+    favicoService.badge(number);
+    $rootScope.titleAddon = '(' + number + ')';
   };
 
   var request = function (url) {
@@ -214,7 +216,7 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
       getMergeRequest(mergeRequest.project_id, id).then(function(mergeRequestData) {
         if (mergeRequestData.state === 'closed' || mergeRequestData.state === 'merged') {
           delete MergeRequestFetcher.mergeRequests[id];
-          updateFavico();
+          updateNumberOfMergeRequests();
         }
       });
     });
@@ -238,7 +240,7 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
         getMergeRequests(project).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
             MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
-            updateFavico();
+            updateNumberOfMergeRequests();
           });
         });
       });
@@ -294,6 +296,7 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
 })
 
 .run(function($rootScope, gitLabManager, $location, $http) {
+  $rootScope.titleAddon = '';
 
   // This events gets triggered on refresh or URL change
   $rootScope.$on('$locationChangeStart', function() {
