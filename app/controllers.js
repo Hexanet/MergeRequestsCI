@@ -5,6 +5,7 @@ angular.module('app')
 .controller('DashboardCtrl', function ($interval, MergeRequestFetcher, configManager) {
   var vm = this;
   vm.displayBranchColumn = configManager.displayBranchColumn();
+  vm.displayLabelsColumn = configManager.displayLabelsColumn();
   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
   var polling = $interval(function () {
@@ -25,7 +26,8 @@ angular.module('app')
     url: configManager.getUrl(),
     private_token: configManager.getPrivateToken(),
     refresh_rate: configManager.getRefreshRate(),
-    display_branch_column: configManager.displayBranchColumn()
+    display_branch_column: configManager.displayBranchColumn(),
+    display_labels_column: configManager.displayLabelsColumn()
   };
 
   vm.save = function(config) {
@@ -35,6 +37,7 @@ angular.module('app')
     ).then(function success() {
       configManager.setRefreshRate(config.refresh_rate);
       configManager.setDisplayBranchColumn(config.display_branch_column);
+      configManager.setDisplayLabelsColumn(config.display_labels_column);
       MergeRequestFetcher.mergeRequests = {};
       $location.path("/");
     }, function failure() {
