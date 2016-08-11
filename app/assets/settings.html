@@ -27,6 +27,13 @@
       No
     </label>
 
+    <label>Display the "Labels" column
+      <input type='radio' ng-model="vm.config.display_labels_column" ng-value="true" />
+      Yes
+      <input type="radio" ng-model="vm.config.display_labels_column" ng-value="false" >
+      No
+    </label>
+
     <input type="submit" class="button expand" ng-click="vm.save(vm.config)" value="Save"/>
   </form>
 </div>

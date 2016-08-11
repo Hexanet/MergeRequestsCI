@@ -37,6 +37,14 @@ angular.module('app')
     localStorageService.set('display_branch_column', displayBranchColumn);
   }
 
+  configManager.displayLabelsColumn = function() {
+    return _.defaultTo(localStorageService.get('display_labels_column'), false);
+  }
+
+  configManager.setDisplayLabelsColumn = function(displayLabelsColumn) {
+    localStorageService.set('display_labels_column', displayLabelsColumn);
+  }
+
   configManager.clearCredentialsValues = function() {
     localStorageService.remove('url', 'private_token');
   }
@@ -159,7 +167,8 @@ angular.module('app')
 
       return $q.all([
         mergeRequests.map(addVotesToMergeRequest),
-        mergeRequests.map(addCiStatusToMergeRequest)
+        mergeRequests.map(addCiStatusToMergeRequest),
+        formatLabelsForMergeRequests(project, mergeRequests)
       ]).then(function() {
         return mergeRequests;
       });
@@ -211,6 +220,25 @@ angular.module('app')
         status: commit.status == "not_found" ? null : commit.status,
         url: mergeRequest.web_url + '/builds'
       };
+    });
+  };
+
+  var formatLabelsForMergeRequests = function(project, mergeRequests) {
+    var url = '/projects/' + project.id + '/labels';
+    return request(url).then(function(response) {
+        var labels = {};
+
+        response.data.forEach(function(label) {
+          labels[label.name] = label;
+        });
+
+        mergeRequests.map(function(mergeRequest) {
+          var mergeRequestLabels = mergeRequest.labels;
+          mergeRequest.labels = [];
+          mergeRequestLabels.forEach(function(label) {
+            mergeRequest.labels.push(labels[label]);
+          });
+        });
     });
   };
 
