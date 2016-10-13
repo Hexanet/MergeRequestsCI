@@ -224,6 +224,10 @@ angular.module('app')
   };
 
   var formatLabelsForMergeRequests = function(project, mergeRequests) {
+    if (mergeRequests.length === 0) {
+      return;
+    }
+
     var url = '/projects/' + project.id + '/labels';
     return request(url).then(function(response) {
         var labels = {};
