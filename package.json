@@ -18,6 +18,7 @@
     "bower": "bower",
     "brunch": "brunch",
     "serve": "brunch b --production && serve -f app/assets/favicon.ico public/",
+    "build": "brunch b --production",
     "postinstall": "bower install"
   }
 }
