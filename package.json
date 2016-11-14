@@ -4,15 +4,13 @@
   "private": true,
   "licence": "MIT",
   "devDependencies": {
-    "brunch": "^2.0.1",
     "bower": "^1.6.0",
-    "javascript-brunch": "^1.8.0",
-    "sass-brunch": "^1.9.2",
+    "serve": "^1.4.0",
     "assetsmanager-brunch": "^1.8.1",
-    "serve": "^1.4.0"
-  },
-  "dependencies": {
-    "css-brunch": "^2.0.0"
+    "brunch": "^2.9.1",
+    "css-brunch": "^2.6.1",
+    "javascript-brunch": "^2.0.0",
+    "sass-brunch": "^2.7.0"
   },
   "scripts": {
     "bower": "bower",
