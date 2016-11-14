@@ -13,3 +13,6 @@ module.exports = config:
     assetsmanager:
       copyTo:
         'images/emoji': ['bower_components/emojify.js/dist/images/basic/*']
+    sass:
+      options:
+        includePaths: ['bower_components/foundation-sites/scss']

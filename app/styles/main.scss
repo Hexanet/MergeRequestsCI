@@ -1,7 +1,5 @@
-@import '_variables.scss';
-
-@import '../../bower_components/foundation-sites/scss/foundation.scss';
-
+@import 'settings.scss';
+@import "foundation";
 @include foundation-everything;
 
 table {
