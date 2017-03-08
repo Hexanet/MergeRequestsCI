@@ -218,7 +218,7 @@ angular.module('app')
 
       mergeRequest.ci = {
         status: commit.status == "not_found" ? null : commit.status,
-        url: mergeRequest.web_url + '/builds'
+        url: mergeRequest.web_url + '/pipelines'
       };
     });
   };
