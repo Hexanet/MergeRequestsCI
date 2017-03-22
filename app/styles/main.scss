@@ -56,6 +56,7 @@ tooltip {
 }
 
 table {
+    border-collapse: collapse;
 
     & > tbody {
         border: none;
