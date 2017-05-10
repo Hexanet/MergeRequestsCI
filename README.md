@@ -33,12 +33,6 @@ $ npm run serve
 
 Then open `http://localhost:3000` in your browser.
 
-At the first connection, you must configure :
-
-* **refreshInterval** : time in seconds between 2 dashboard updates
-* **apiUrl** : url of your GitLab API
-* **token** : private token for API calls
-
 ## Credits
 
 Developed by the SI Team of [Hexanet](http://www.hexanet.fr/).
