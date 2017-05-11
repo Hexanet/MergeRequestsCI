@@ -1,39 +1,58 @@
 <div class="columns">
-  <h1>Settings</h1>
-
+  <div class="row">
+    <h1 class="small-3 columns text-right">Settings</h1>
+  </div>
   <p ng-show="vm.error">
     Authentication failed: please verify your url and private token
   </p>
 
   <form novalidate>
-    <label>GitLab url
-      <input type='url' ng-model="vm.config.url" placeholder="https://gitlab.com"/>
-    </label>
-    <label>Private token
-      <input type='text' ng-model="vm.config.private_token" placeholder="" />
-    </label>
-    <p class="help-text">
-      Token to authenticate you against GitLab.
-      <span ng-show="vm.config.url"><br /><a href="{{ vm.config.url }}/profile/account" target="_blank">Click here</a> to get your private token.</span>
-    </p>
-    <label>Refresh rate (minutes)
-      <input type='text' ng-model="vm.config.refresh_rate" />
-    </label>
-
-    <label>Display the "Branch" column
-      <input type='radio' ng-model="vm.config.display_branch_column" ng-value="true" />
-      Yes
-      <input type="radio" ng-model="vm.config.display_branch_column" ng-value="false" >
-      No
-    </label>
-
-    <label>Display the "Labels" column
-      <input type='radio' ng-model="vm.config.display_labels_column" ng-value="true" />
-      Yes
-      <input type="radio" ng-model="vm.config.display_labels_column" ng-value="false" >
-      No
-    </label>
-
-    <input type="submit" class="button expand" ng-click="vm.save(vm.config)" value="Save"/>
+    <div class="row">
+      <div class="small-3 columns">
+        <label for="url-input" class="text-right middle">GitLab url</label>
+      </div>
+      <div class="small-9 columns">
+        <input type="url" id="url-input" ng-model="vm.config.url" placeholder="https://gitlab.com"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-3 columns">
+        <label for="token-input" class="text-right middle">Private token</label>
+      </div>
+      <div class="small-9 columns">
+        <input type="text" id="token-input" ng-model="vm.config.private_token"/>
+        <p class="help-text">
+          Token to authenticate you against GitLab.
+          <span ng-show="vm.config.url"><br /><a href="{{ vm.config.url }}/profile/account" target="_blank">Click here</a> to get your private token.</span>
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-3 columns">
+        <label for="refresh-input" class="text-right middle">Refresh rate (minutes)</label>
+      </div>
+      <div class="small-9 columns">
+        <input type="text" id="refresh-input" ng-model="vm.config.refresh_rate" />
+      </div>
+    </div>
+    <fieldset class="row">
+      <legend class="small-3 columns text-right middle">Display the "Branch" column</legend>
+      <div class="small-9 columns">
+        <input type="radio" id="branch-input-yes" ng-model="vm.config.display_branch_column" ng-value="true" /><label for="branch-input-yes">Yes</label>
+        <input type="radio" id="branch-input-no" ng-model="vm.config.display_branch_column" ng-value="false" /><label for="branch-input-no">No</label>
+      </div>
+    </fieldset>
+    <fieldset class="row">
+      <legend class="small-3 columns text-right middle">Display the "Labels" column</legend>
+      <div class="small-9 columns">
+        <input type="radio" id="label-input-yes" ng-model="vm.config.display_labels_column" ng-value="true" /><label for="label-input-yes">Yes</label>
+        <input type="radio" id="label-input-no" ng-model="vm.config.display_labels_column" ng-value="false" /><label for="label-input-no">No</label>
+      </div>
+    </fieldset>
+    <div class="row">
+      <div class="small-offset-3 small-9 columns">
+        <input type="submit" class="button expand" ng-click="vm.save(vm.config)" value="Save"/>
+      </div>
+    </div>
   </form>
 </div>
