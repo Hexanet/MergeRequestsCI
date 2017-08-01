@@ -62,7 +62,7 @@ angular.module('app')
       deferred.reject("Url and/or private token are missing");
     } else {
       $http({
-        url: configManager.getUrl() + '/api/v3/user',
+        url: configManager.getUrl() + '/api/v4/user',
         headers:  {'PRIVATE-TOKEN': configManager.getPrivateToken()}
       }).then(function(response) {
         deferred.resolve(response.data);
@@ -127,7 +127,7 @@ angular.module('app')
 
   var request = function (url) {
     return $http({
-      url: configManager.getUrl() + '/api/v3' + url,
+      url: configManager.getUrl() + '/api/v4' + url,
       headers:  {'PRIVATE-TOKEN': configManager.getPrivateToken()}
     });
   };
@@ -183,7 +183,7 @@ angular.module('app')
   };
 
   var addVotesToMergeRequest = function(mergeRequest) {
-    var url = '/projects/' + mergeRequest.project.id + '/merge_requests/' + mergeRequest.id + '/award_emoji?per_page=100';
+    var url = '/projects/' + mergeRequest.project.id + '/merge_requests/' + mergeRequest.iid + '/award_emoji?per_page=100';
     return request(url).then(function(response) {
       var awards = response.data;
 
