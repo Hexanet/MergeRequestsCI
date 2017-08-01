@@ -10,7 +10,7 @@
     "brunch": "^2.9.1",
     "css-brunch": "^2.6.1",
     "javascript-brunch": "^2.0.0",
-    "sass-brunch": "^2.7.0"
+    "sass-brunch": "^2.10.0"
   },
   "scripts": {
     "bower": "bower",
