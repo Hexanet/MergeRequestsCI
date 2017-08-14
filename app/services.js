@@ -176,7 +176,7 @@ angular.module('app')
   };
 
   var getMergeRequest = function(projectId, mergeRequestId) {
-    var url = '/projects/' + projectId + '/merge_request/' + mergeRequestId;
+    var url = '/projects/' + projectId + '/merge_requests/' + mergeRequestId;
     return request(url).then(function(response) {
       return response.data;
     });
