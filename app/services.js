@@ -274,7 +274,7 @@ angular.module('app')
       projects.forEach(function (project) {
         getMergeRequests(project).then(function (mergeRequests) {
           mergeRequests.forEach(function (mergeRequest) {
-            MergeRequestFetcher.mergeRequests[mergeRequest.id] = mergeRequest;
+            MergeRequestFetcher.mergeRequests[mergeRequest.iid] = mergeRequest;
             updateFavico();
           });
         });
