@@ -1,7 +1,4 @@
 module.exports = config:
-  modules:
-    autoRequire:
-      'app.js': ['initialize']
   files:
     javascripts: joinTo:
       'app.js': /^app/

@@ -18,7 +18,13 @@
   },
   "dependencies": {
     "angular": "^1.6.5",
-    "emojify.js": "^1.1.0",
-    "foundation-sites": "^6.3.1"
+    "angular-emojify": "https://github.com/emilol/angular-emojify.git#89a877f",
+    "angular-local-storage": "^0.6.0",
+    "angular-moment": "^1.0.1",
+    "angular-route": "^1.6.5",
+    "angular-tooltips": "^1.2.2",
+    "foundation-sites": "^6.3.1",
+    "moment": "^2.18.1",
+    "lodash": "^4.14.2"
   }
 }
