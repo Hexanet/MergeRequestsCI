@@ -4,7 +4,6 @@
   "private": true,
   "licence": "MIT",
   "devDependencies": {
-    "bower": "^1.6.0",
     "serve": "^1.4.0",
     "assetsmanager-brunch": "^1.8.1",
     "brunch": "^2.9.1",
@@ -13,10 +12,13 @@
     "sass-brunch": "^2.10.0"
   },
   "scripts": {
-    "bower": "bower",
     "brunch": "brunch",
     "serve": "brunch b --production && serve -f app/assets/favicon.ico public/",
-    "build": "brunch b --production",
-    "postinstall": "bower install"
+    "build": "brunch b --production"
+  },
+  "dependencies": {
+    "angular": "^1.6.5",
+    "emojify.js": "^1.1.0",
+    "foundation-sites": "^6.3.1"
   }
 }
