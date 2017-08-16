@@ -1,13 +1,14 @@
 var angular = require('angular');
 
-require('angular-emojify');
 require('angular-tooltips');
 require('angular-route');
 require('angular-local-storage');
 require('angular-moment');
-require('lodash');
 
-angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModule', 'angularMoment'])
+var emojify = require('emojify.js');
+var _ = require('lodash');
+
+angular.module('app', ['720kb.tooltips', 'ngRoute', 'LocalStorageModule', 'angularMoment'])
 
 .config(function($routeProvider, localStorageServiceProvider) {
   localStorageServiceProvider
@@ -33,6 +34,15 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
   return function(collection) {
     return _.size(collection);
   }
+})
+
+.filter('emojify', function($sce) {
+  return function (input) {
+        if (!input)
+            return "";
+
+        return $sce.trustAsHtml(emojify.replace(input));
+    };
 })
 
 .service('configManager', require('./services/config_manager'))

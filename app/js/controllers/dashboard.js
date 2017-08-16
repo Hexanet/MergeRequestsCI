@@ -1,20 +1,16 @@
-module.exports = function() {
+module.exports = function ($interval, MergeRequestFetcher, configManager) {
+  var vm = this;
+  vm.displayBranchColumn = configManager.displayBranchColumn();
+  vm.displayLabelsColumn = configManager.displayLabelsColumn();
+  vm.mergeRequests = MergeRequestFetcher.mergeRequests;
 
- return function ($interval, MergeRequestFetcher, configManager) {
-   var vm = this;
-   vm.displayBranchColumn = configManager.displayBranchColumn();
-   vm.displayLabelsColumn = configManager.displayLabelsColumn();
-   vm.mergeRequests = MergeRequestFetcher.mergeRequests;
+  var polling = $interval(function () {
+    MergeRequestFetcher.refresh();
+  }, configManager.getRefreshRate() * 60 * 1000);
 
-   var polling = $interval(function () {
-     MergeRequestFetcher.refresh();
-   }, configManager.getRefreshRate() * 60 * 1000);
+  vm.refresh = function() {
+    MergeRequestFetcher.refresh();
+  };
 
-   vm.refresh = function() {
-     MergeRequestFetcher.refresh();
-   };
-
-   MergeRequestFetcher.refresh();
- };
-
+  MergeRequestFetcher.refresh();
 };
