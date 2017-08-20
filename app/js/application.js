@@ -1,14 +1,9 @@
 var angular = require('angular');
 
-require('angular-tooltips');
-require('angular-route');
-require('angular-local-storage');
-require('angular-moment');
-
 var emojify = require('emojify.js');
 var _ = require('lodash');
 
-angular.module('app', ['720kb.tooltips', 'ngRoute', 'LocalStorageModule', 'angularMoment'])
+angular.module('app', [require('angular-tooltips'), require('angular-route'), require('angular-local-storage'), require('angular-moment')])
 
 .config(function($routeProvider, localStorageServiceProvider) {
   localStorageServiceProvider

@@ -1,6 +1,7 @@
 @import 'settings.scss';
 @import "foundation";
 @include foundation-everything;
+@import 'angular-tooltips.scss';
 
 $secondary-color: #42AEF2;
 
