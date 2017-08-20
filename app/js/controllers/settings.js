@@ -1,25 +1,4 @@
-"use strict";
-
-angular.module('app')
-
-.controller('DashboardCtrl', function ($interval, MergeRequestFetcher, configManager) {
-  var vm = this;
-  vm.displayBranchColumn = configManager.displayBranchColumn();
-  vm.displayLabelsColumn = configManager.displayLabelsColumn();
-  vm.mergeRequests = MergeRequestFetcher.mergeRequests;
-
-  var polling = $interval(function () {
-    MergeRequestFetcher.refresh();
-  }, configManager.getRefreshRate() * 60 * 1000);
-
-  vm.refresh = function() {
-    MergeRequestFetcher.refresh();
-  };
-
-  MergeRequestFetcher.refresh();
-})
-
-.controller('SettingsCtrl', function (gitLabManager, configManager, $location, MergeRequestFetcher) {
+module.exports = function (gitLabManager, configManager, $location, MergeRequestFetcher) {
   var vm = this;
   vm.error = false;
   vm.config = {
@@ -45,4 +24,4 @@ angular.module('app')
     });
 
   }
-});
+};

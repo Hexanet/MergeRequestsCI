@@ -1,6 +1,9 @@
-"use strict";
+var angular = require('angular');
 
-angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModule', 'angularMoment'])
+var emojify = require('emojify.js');
+var _ = require('lodash');
+
+angular.module('app', [require('angular-tooltips'), require('angular-route'), require('angular-local-storage'), require('angular-moment')])
 
 .config(function($routeProvider, localStorageServiceProvider) {
   localStorageServiceProvider
@@ -27,6 +30,23 @@ angular.module('app', ['emojify', '720kb.tooltips', 'ngRoute', 'LocalStorageModu
     return _.size(collection);
   }
 })
+
+.filter('emojify', function($sce) {
+  return function (input) {
+        if (!input)
+            return "";
+
+        return $sce.trustAsHtml(emojify.replace(input));
+    };
+})
+
+.service('configManager', require('./services/config_manager'))
+.service('gitLabManager', require('./services/gitlab_manager'))
+.service('favicoService', require('./services/favico'))
+.service('MergeRequestFetcher', require('./services/merge_request_fetcher'))
+
+.controller('DashboardCtrl', require('./controllers/dashboard'))
+.controller('SettingsCtrl', require('./controllers/settings'))
 
 .run(function($rootScope, gitLabManager, $location, $http) {
   $rootScope.titleAddon = '';

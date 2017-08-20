@@ -1,18 +1,16 @@
 module.exports = config:
-  npm:
-    enabled: false
-  modules:
-    definition: false
-    wrapper: false
   files:
     javascripts: joinTo:
-      'vendor.js': /^(?!^(app))/
       'app.js': /^app/
+      'vendor.js': /^(?!app)/
     stylesheets: joinTo: 'app.css'
   plugins:
     assetsmanager:
       copyTo:
-        'images/emoji': ['bower_components/emojify.js/dist/images/basic/*']
+        'images/emoji': ['node_modules/emojify.js/dist/images/basic/*']
     sass:
       options:
-        includePaths: ['bower_components/foundation-sites/scss']
+        includePaths: [
+          'node_modules/foundation-sites/scss',
+          'node_modules/angular-tooltips/lib'
+        ]

@@ -1,22 +1,31 @@
 {
   "name": "MergeRequestsCI",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "licence": "MIT",
   "devDependencies": {
-    "bower": "^1.6.0",
-    "serve": "^1.4.0",
     "assetsmanager-brunch": "^1.8.1",
     "brunch": "^2.9.1",
     "css-brunch": "^2.6.1",
     "javascript-brunch": "^2.0.0",
-    "sass-brunch": "^2.10.0"
+    "sass-brunch": "^2.10.0",
+    "serve": "^1.4.0"
   },
   "scripts": {
-    "bower": "bower",
     "brunch": "brunch",
     "serve": "brunch b --production && serve -f app/assets/favicon.ico public/",
-    "build": "brunch b --production",
-    "postinstall": "bower install"
+    "build": "brunch b --production"
+  },
+  "dependencies": {
+    "angular": "~1.5.0",
+    "angular-local-storage": "^0.6.0",
+    "angular-moment": "^1.0.1",
+    "angular-route": "~1.5.0",
+    "angular-tooltips": "^1.2.2",
+    "emojify.js": "^1.1.0",
+    "favico.js": "^0.3.10",
+    "foundation-sites": "~6.3.1",
+    "lodash": "^4.14.2",
+    "moment": "^2.18.1"
   }
 }
