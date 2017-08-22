@@ -4,10 +4,11 @@
   "private": true,
   "licence": "MIT",
   "devDependencies": {
-    "brunch": "^2.10.0",
     "assetsmanager-brunch": "^1.8.1",
+    "brunch": "^2.10.0",
     "sass-brunch": "^2.10.0",
-    "serve": "^1.4.0"
+    "serve": "^1.4.0",
+    "uglify-js-brunch": "^2.10.0"
   },
   "scripts": {
     "brunch": "brunch",
