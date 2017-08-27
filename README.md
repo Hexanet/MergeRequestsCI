@@ -6,7 +6,7 @@ UI to see all GitLab merge requests of your team in one place.
 
 ## Requirements
 
-* [GitLab](https://about.gitlab.com/) >= 9.0
+* [GitLab](https://about.gitlab.com/) >= 9.5
 
 ## Installation
 
