@@ -15,7 +15,7 @@
   </thead>
   <tbody>
     <tr ng-repeat="mergeRequest in vm.mergeRequests">
-      <td><time tooltips tooltip-template="{{ mergeRequest.lastActivity | date: 'short' }}" tooltip-size="small" tooltip-smart="true" am-time-ago="mergeRequest.lastActivity"></time></td>
+      <td><time tooltips tooltip-template="{{ mergeRequest.updated_at | date: 'short' }}" tooltip-size="small" tooltip-smart="true" am-time-ago="mergeRequest.updated_at"></time></td>
       <td><a href="{{ mergeRequest.project.web_url }}" target="_blank">{{ mergeRequest.project.name }}</a></td>
       <td><a href="{{ mergeRequest.web_url }}" target="_blank" ng-bind-html="mergeRequest.title|emojify"></a></td>
       <td class="text-center">
@@ -26,7 +26,7 @@
       <td ng-if="vm.displayBranchColumn">{{ mergeRequest.source_branch }} &#8680; {{ mergeRequest.target_branch }}</td>
       <td ng-if="vm.displayLabelsColumn">
         <ul class="menu simple">
-          <li ng-repeat="label in mergeRequest.labels">
+          <li ng-repeat="label in mergeRequest.formatted_labels">
             <span style="background-color: {{ label.color }}" class="label tiny" tooltips tooltip-template="{{ label.description }}" tooltip-size="small">{{ label.name }}</span>
           </li>
         </ul>

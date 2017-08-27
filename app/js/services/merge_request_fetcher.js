@@ -3,6 +3,7 @@ var _ = require('lodash');
 module.exports = function (gitLabManager, configManager, favicoService, $q, $http) {
   var MergeRequestFetcher = {};
   MergeRequestFetcher.mergeRequests = {};
+  MergeRequestFetcher.labels = {};
 
   var authenticatedUser = null;
 
@@ -17,43 +18,16 @@ module.exports = function (gitLabManager, configManager, favicoService, $q, $htt
     });
   };
 
-  var getProjects = function() {
-    var deferred = $q.defer();
-    var projects = [];
-
-    function loadProjects(page) {
-      var url = '/projects?order_by=last_activity_at&per_page=100&page=' + page;
-      request(url)
-        .then(function(response) {
-          projects = _.union(projects, response.data);
-
-          response.data.length ? loadProjects(++page) : deferred.resolve(projects);
-       });
-    }
-
-    loadProjects(1);
-
-    return deferred.promise;
-  };
-
-  var getMergeRequests = function(project) {
-    var url = '/projects/' + project.id + '/merge_requests?state=opened';
+  var getMergeRequests = function() {
+    var url = '/merge_requests?state=opened&scope=all';
     return request(url).then(function(response) {
       var mergeRequests = response.data;
 
-      mergeRequests.map(function(mergeRequest) {
-        mergeRequest.project = {};
-        mergeRequest.project.id = project.id;
-        mergeRequest.project.name = project.name_with_namespace;
-        mergeRequest.project.web_url = project.web_url;
-        mergeRequest.web_url = project.web_url + '/merge_requests/' + mergeRequest.iid;
-        mergeRequest.lastActivity = mergeRequest.updated_at;
-      });
-
       return $q.all([
+        mergeRequests.map(addProjectToMergeRequest),
         mergeRequests.map(addVotesToMergeRequest),
         mergeRequests.map(addCiStatusToMergeRequest),
-        formatLabelsForMergeRequests(project, mergeRequests)
+        mergeRequests.map(formatLabelsForMergeRequest)
       ]).then(function() {
         return mergeRequests;
       });
@@ -67,8 +41,23 @@ module.exports = function (gitLabManager, configManager, favicoService, $q, $htt
     });
   };
 
+  var addProjectToMergeRequest = function(mergeRequest) {
+    var url = '/projects/' + mergeRequest.project_id;
+    return request(url).then(function(response) {
+      var project = response.data;
+      mergeRequest.project = {};
+      mergeRequest.project.name = project.name_with_namespace;
+      mergeRequest.project.web_url = project.web_url;
+    });
+  };
+
+
   var addVotesToMergeRequest = function(mergeRequest) {
-    var url = '/projects/' + mergeRequest.project.id + '/merge_requests/' + mergeRequest.iid + '/award_emoji?per_page=100';
+    if (mergeRequest.upvotes === 0 && mergeRequest.downvotes === 0) {
+      return;
+    }
+
+    var url = '/projects/' + mergeRequest.project_id + '/merge_requests/' + mergeRequest.iid + '/award_emoji?per_page=100';
     return request(url).then(function(response) {
       var awards = response.data;
 
@@ -77,57 +66,56 @@ module.exports = function (gitLabManager, configManager, favicoService, $q, $htt
       mergeRequest.i_have_voted = 0;
       awards.forEach(function (award) {
 
-          if (award.name === 'thumbsup') {
-              mergeRequest.upvoters.push(award.user.name);
+        if (award.name === 'thumbsup') {
+          mergeRequest.upvoters.push(award.user.name);
 
-              if (award.user.id === authenticatedUser.id) {
-                  mergeRequest.i_have_voted = 1;
-              }
+          if (award.user.id === authenticatedUser.id) {
+            mergeRequest.i_have_voted = 1;
           }
+        }
 
-          if (award.name === 'thumbsdown') {
-              mergeRequest.downvoters.push(award.user.name);
+        if (award.name === 'thumbsdown') {
+          mergeRequest.downvoters.push(award.user.name);
 
-              if (award.user.id === authenticatedUser.id) {
-                  mergeRequest.i_have_voted = -1;
-              }
+          if (award.user.id === authenticatedUser.id) {
+            mergeRequest.i_have_voted = -1;
           }
+        }
       });
     });
   };
 
   var addCiStatusToMergeRequest = function(mergeRequest) {
-    var url = '/projects/' + mergeRequest.project.id + '/repository/commits/' + encodeURIComponent(mergeRequest.source_branch);
+    var url = '/projects/' + mergeRequest.project_id + '/repository/commits/' + encodeURIComponent(mergeRequest.source_branch);
     return request(url).then(function(response) {
       var commit = response.data;
 
       mergeRequest.ci = {
-        status: commit.status == "not_found" ? null : commit.status,
+        status: commit.status === "not_found" ? null : commit.status,
         url: mergeRequest.web_url + '/pipelines'
       };
     });
   };
 
-  var formatLabelsForMergeRequests = function(project, mergeRequests) {
-    if (mergeRequests.length === 0) {
-      return;
+  var formatLabelsForMergeRequest = function(mergeRequest) {
+    if (MergeRequestFetcher.labels[mergeRequest.project_id] !== undefined) {
+      mergeRequest.formatted_labels = [];
+      mergeRequest.labels.forEach(function(label) {
+        mergeRequest.formatted_labels.push(MergeRequestFetcher.labels[mergeRequest.project_id][label]);
+      });
     }
 
-    var url = '/projects/' + project.id + '/labels';
+    var url = '/projects/' + mergeRequest.project_id + '/labels';
     return request(url).then(function(response) {
-        var labels = {};
+      MergeRequestFetcher.labels[mergeRequest.project_id] = {};
+      response.data.forEach(function(label) {
+        MergeRequestFetcher.labels[mergeRequest.project_id][label.name] = label;
+      });
 
-        response.data.forEach(function(label) {
-          labels[label.name] = label;
-        });
-
-        mergeRequests.map(function(mergeRequest) {
-          var mergeRequestLabels = mergeRequest.labels;
-          mergeRequest.labels = [];
-          mergeRequestLabels.forEach(function(label) {
-            mergeRequest.labels.push(labels[label]);
-          });
-        });
+      mergeRequest.formatted_labels = [];
+      mergeRequest.labels.forEach(function(label) {
+        mergeRequest.formatted_labels.push(MergeRequestFetcher.labels[mergeRequest.project_id][label]);
+      });
     });
   };
 
@@ -142,27 +130,17 @@ module.exports = function (gitLabManager, configManager, favicoService, $q, $htt
     });
   };
 
-  var filterProjects = function(project) {
-    return project.merge_requests_enabled && !project.archived;
-  };
-
   gitLabManager.getUser().then(function(user) {
-      authenticatedUser = user;
+    authenticatedUser = user;
   });
 
   MergeRequestFetcher.refresh = function () {
     cleanMergeRequests();
 
-    getProjects().then(function(projects) {
-      projects = projects.filter(filterProjects);
-
-      projects.forEach(function (project) {
-        getMergeRequests(project).then(function (mergeRequests) {
-          mergeRequests.forEach(function (mergeRequest) {
-            MergeRequestFetcher.mergeRequests[mergeRequest.iid] = mergeRequest;
-            updateFavico();
-          });
-        });
+    getMergeRequests().then(function(mergeRequests) {
+      mergeRequests.forEach(function (mergeRequest) {
+        MergeRequestFetcher.mergeRequests[mergeRequest.iid] = mergeRequest;
+        updateFavico();
       });
     });
   };
