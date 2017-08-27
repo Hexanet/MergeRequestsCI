@@ -86,13 +86,19 @@ module.exports = function (gitLabManager, configManager, favicoService, $q, $htt
   };
 
   var addCiStatusToMergeRequest = function(mergeRequest) {
-    var url = '/projects/' + mergeRequest.project_id + '/repository/commits/' + encodeURIComponent(mergeRequest.source_branch);
+    var url = '/projects/' + mergeRequest.project_id + '/pipelines?ref=' + encodeURIComponent(mergeRequest.source_branch);
     return request(url).then(function(response) {
-      var commit = response.data;
+      var pipelines = response.data;
+
+      if (pipelines.length === 0) {
+        return;
+      }
+
+      var pipeline = pipelines[0];
 
       mergeRequest.ci = {
-        status: commit.status === "not_found" ? null : commit.status,
-        url: mergeRequest.web_url + '/pipelines'
+        pipeline_id: pipeline.id,
+        status: pipeline.status
       };
     });
   };
