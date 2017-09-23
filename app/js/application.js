@@ -43,9 +43,9 @@ angular.module('app', [require('angular-tooltips'), require('angular-route'), re
 .service('configManager', ['localStorageService', require('./services/config_manager')])
 .service('gitLabManager', ['configManager', '$http', '$q', require('./services/gitlab_manager')])
 .service('favicoService', require('./services/favico'))
-.service('MergeRequestFetcher', ['gitLabManager', 'configManager', 'favicoService', '$q', '$http', require('./services/merge_request_fetcher')])
+.service('MergeRequestFetcher', ['gitLabManager', 'configManager', '$q', '$http', require('./services/merge_request_fetcher')])
 
-.controller('DashboardCtrl', ['$interval', 'MergeRequestFetcher', 'configManager', require('./controllers/dashboard')])
+.controller('DashboardCtrl', ['$interval', 'MergeRequestFetcher', 'configManager', 'favicoService', require('./controllers/dashboard')])
 .controller('SettingsCtrl', ['gitLabManager', 'configManager', '$location', 'MergeRequestFetcher', require('./controllers/settings')])
 
 .run(['$rootScope', 'gitLabManager', '$location', '$http', function($rootScope, gitLabManager, $location, $http) {

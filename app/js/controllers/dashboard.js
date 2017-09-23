@@ -1,16 +1,18 @@
-module.exports = function ($interval, MergeRequestFetcher, configManager) {
+module.exports = function ($interval, MergeRequestFetcher, configManager, favicoService) {
   var vm = this;
-  vm.displayBranchColumn = configManager.displayBranchColumn();
-  vm.displayLabelsColumn = configManager.displayLabelsColumn();
-  vm.mergeRequests = MergeRequestFetcher.mergeRequests;
-
-  var polling = $interval(function () {
-    MergeRequestFetcher.refresh();
-  }, configManager.getRefreshRate() * 60 * 1000);
-
   vm.refresh = function() {
-    MergeRequestFetcher.refresh();
+    MergeRequestFetcher.getMergeRequests().then(function(mergeRequests) {
+      vm.mergeRequests = mergeRequests;
+      favicoService.badge(mergeRequests.length);
+    });
   };
 
-  MergeRequestFetcher.refresh();
+  var polling = $interval(function () {
+    vm.refresh();
+  }, configManager.getRefreshRate() * 60 * 1000);
+
+  vm.displayBranchColumn = configManager.displayBranchColumn();
+  vm.displayLabelsColumn = configManager.displayLabelsColumn();
+
+  vm.refresh();
 };
