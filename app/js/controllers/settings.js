@@ -17,7 +17,6 @@ module.exports = function (gitLabManager, configManager, $location, MergeRequest
       configManager.setRefreshRate(config.refresh_rate);
       configManager.setDisplayBranchColumn(config.display_branch_column);
       configManager.setDisplayLabelsColumn(config.display_labels_column);
-      MergeRequestFetcher.mergeRequests = [];
       $location.path("/");
     }, function failure() {
       vm.error = true;

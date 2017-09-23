@@ -1,15 +1,9 @@
 var _ = require('lodash');
 
-module.exports = function (gitLabManager, configManager, favicoService, $q, $http) {
+module.exports = function (gitLabManager, configManager, $q, $http) {
   var MergeRequestFetcher = {};
-  MergeRequestFetcher.mergeRequests = [];
   MergeRequestFetcher.labels = {};
-
   var authenticatedUser = null;
-
-  var updateFavico = function() {
-    favicoService.badge(MergeRequestFetcher.mergeRequests.length);
-  };
 
   var request = function (url) {
     return $http({
@@ -18,7 +12,7 @@ module.exports = function (gitLabManager, configManager, favicoService, $q, $htt
     });
   };
 
-  var getMergeRequests = function() {
+  MergeRequestFetcher.getMergeRequests = function() {
     var url = '/merge_requests?state=opened&scope=all&order_by=updated_at';
     return request(url).then(function(response) {
       var mergeRequests = response.data;
@@ -128,17 +122,6 @@ module.exports = function (gitLabManager, configManager, favicoService, $q, $htt
   gitLabManager.getUser().then(function(user) {
     authenticatedUser = user;
   });
-
-  MergeRequestFetcher.refresh = function () {
-    this.mergeRequests = [];
-
-    getMergeRequests().then(function(mergeRequests) {
-      mergeRequests.forEach(function (mergeRequest) {
-        MergeRequestFetcher.mergeRequests.push(mergeRequest);
-        updateFavico();
-      });
-    });
-  };
 
   return MergeRequestFetcher;
 };
