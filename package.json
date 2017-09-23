@@ -10,11 +10,6 @@
     "serve": "^1.4.0",
     "uglify-js-brunch": "^2.10.0"
   },
-  "scripts": {
-    "brunch": "brunch",
-    "serve": "brunch b --production && serve -f app/assets/favicon.ico public/",
-    "build": "brunch b --production"
-  },
   "dependencies": {
     "angular": "~1.5.0",
     "angular-local-storage": "^0.6.0",
