@@ -11,4 +11,6 @@ cache:
   directories:
   - node_modules
 
-script: npm run build
+script:
+  - make install
+  - make build

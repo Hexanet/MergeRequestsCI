@@ -20,7 +20,7 @@ $ cd MergeRequestsCI
 ### Install dependencies
 
 ```shell
-$ npm install
+$ make install
 ```
 
 ## Run the server
@@ -28,7 +28,7 @@ $ npm install
 After configuration, you have to build the code and launch the server.
 
 ```shell
-$ npm run serve
+$ make serve
 ```
 
 Then open `http://localhost:3000` in your browser.
