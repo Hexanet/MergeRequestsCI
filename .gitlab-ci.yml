@@ -7,7 +7,7 @@ pages:
 
   script:
   - npm install
-  - npm run brunch -- b --production
+  - ./node_modules/brunch/bin/brunch b --production
   artifacts:
     paths:
     - public
