@@ -1,4 +1,6 @@
 module.exports = config:
+  server:
+    port: 3000
   files:
     javascripts: joinTo:
       'app.js': /^app/
