@@ -12,10 +12,13 @@ install: ## Install
 .PHONY: build
 build: ## Build the project
 	@echo 'Building the project'
-	@brunch b --production
+	@node_modules/.bin/brunch b --production
+
+.PHONY: watch
+watch: ## Watch
+	@node_modules/.bin/brunch watch --server
 
 .PHONY: serve
 serve: build ## Run the server
-	@node_modules/brunch/bin/brunch b --production
 	@echo 'Starting web server on http://localhost:3000'
-	@node_modules/serve/bin/serve -f app/assets/favicon.ico public/
+	@node_modules/.bin/serve -f app/assets/favicon.ico public/
