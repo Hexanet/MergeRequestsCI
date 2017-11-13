@@ -7,7 +7,7 @@ module.exports = function ($interval, MergeRequestFetcher, configManager, favico
     });
   };
 
-  var polling = $interval(function () {
+  $interval(function () {
     vm.refresh();
   }, configManager.getRefreshRate() * 60 * 1000);
 

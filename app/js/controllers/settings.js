@@ -1,4 +1,4 @@
-module.exports = function (gitLabManager, configManager, $location, MergeRequestFetcher) {
+module.exports = function (gitLabManager, configManager, $location) {
   var vm = this;
   vm.error = false;
   vm.config = {

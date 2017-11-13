@@ -1,0 +1,10 @@
+{
+  "extends": "eslint:recommended",
+  "rules": {},
+  "env": {
+    "amd": true
+  },
+  "globals": {
+    "module": false,
+  }
+}

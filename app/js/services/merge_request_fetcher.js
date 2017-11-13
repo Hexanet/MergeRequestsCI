@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 module.exports = function (gitLabManager, configManager, $q, $http) {
   var MergeRequestFetcher = {};
   MergeRequestFetcher.labels = {};
@@ -25,13 +23,6 @@ module.exports = function (gitLabManager, configManager, $q, $http) {
       ]).then(function() {
         return mergeRequests;
       });
-    });
-  };
-
-  var getMergeRequest = function(projectId, mergeRequestId) {
-    var url = '/projects/' + projectId + '/merge_requests/' + mergeRequestId;
-    return request(url).then(function(response) {
-      return response.data;
     });
   };
 

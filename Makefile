@@ -22,3 +22,7 @@ watch: ## Watch
 serve: build ## Run the server
 	@echo 'Starting web server on http://localhost:3000'
 	@node_modules/.bin/serve -f app/assets/favicon.ico public/
+
+.PHONY: lint
+lint: ## Lint with eslint
+	@node_modules/eslint/bin/eslint.js --fix ./app/js
