@@ -1,7 +1,5 @@
 var angular = require('angular');
-
 var emojify = require('emojify.js');
-var _ = require('lodash');
 
 angular.module('app', [require('angular-tooltips'), require('angular-route'), require('angular-local-storage'), require('angular-moment')])
 
@@ -24,12 +22,6 @@ angular.module('app', [require('angular-tooltips'), require('angular-route'), re
       redirectTo: '/'
     });
 }])
-
-.filter('length', function() {
-  return function(collection) {
-    return _.size(collection);
-  }
-})
 
 .filter('emojify', ['$sce', function($sce) {
   return function (input) {
