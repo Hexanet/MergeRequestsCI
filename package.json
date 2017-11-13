@@ -7,6 +7,7 @@
     "assetsmanager-brunch": "^1.8.1",
     "brunch": "^2.10.0",
     "eslint": "^4.11.0",
+    "eslint-brunch": "^3.12.0",
     "sass-brunch": "^2.10.0",
     "serve": "^1.4.0",
     "uglify-js-brunch": "^2.10.0"
