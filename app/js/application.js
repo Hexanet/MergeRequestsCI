@@ -1,7 +1,5 @@
 var angular = require('angular');
-
 var emojify = require('emojify.js');
-var _ = require('lodash');
 
 angular.module('app', [require('angular-tooltips'), require('angular-route'), require('angular-local-storage'), require('angular-moment')])
 
@@ -25,12 +23,6 @@ angular.module('app', [require('angular-tooltips'), require('angular-route'), re
     });
 }])
 
-.filter('length', function() {
-  return function(collection) {
-    return _.size(collection);
-  }
-})
-
 .filter('emojify', ['$sce', function($sce) {
   return function (input) {
         if (!input)
@@ -48,7 +40,7 @@ angular.module('app', [require('angular-tooltips'), require('angular-route'), re
 .controller('DashboardCtrl', ['$interval', 'MergeRequestFetcher', 'configManager', 'favicoService', require('./controllers/dashboard')])
 .controller('SettingsCtrl', ['gitLabManager', 'configManager', '$location', 'MergeRequestFetcher', require('./controllers/settings')])
 
-.run(['$rootScope', 'gitLabManager', '$location', '$http', function($rootScope, gitLabManager, $location, $http) {
+.run(['$rootScope', 'gitLabManager', '$location', function($rootScope, gitLabManager, $location) {
   $rootScope.titleAddon = '';
 
   // This events gets triggered on refresh or URL change

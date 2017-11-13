@@ -1,5 +1,3 @@
-var _ = require('lodash');
-
 module.exports = function(localStorageService) {
   var configManager = {};
 
@@ -28,7 +26,7 @@ module.exports = function(localStorageService) {
   }
 
   configManager.displayBranchColumn = function() {
-    return _.defaultTo(localStorageService.get('display_branch_column'), true);
+    return localStorageService.get('display_branch_column') || true;
   }
 
   configManager.setDisplayBranchColumn= function(displayBranchColumn) {
@@ -36,7 +34,7 @@ module.exports = function(localStorageService) {
   }
 
   configManager.displayLabelsColumn = function() {
-    return _.defaultTo(localStorageService.get('display_labels_column'), false);
+    return localStorageService.get('display_labels_column') || false;
   }
 
   configManager.setDisplayLabelsColumn = function(displayLabelsColumn) {
