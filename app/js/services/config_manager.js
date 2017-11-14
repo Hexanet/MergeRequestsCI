@@ -26,7 +26,8 @@ module.exports = function(localStorageService) {
   }
 
   configManager.displayBranchColumn = function() {
-    return localStorageService.get('display_branch_column') || true;
+    var value = localStorageService.get('display_branch_column');
+    return value !== null ? value : true;
   }
 
   configManager.setDisplayBranchColumn= function(displayBranchColumn) {
@@ -34,7 +35,8 @@ module.exports = function(localStorageService) {
   }
 
   configManager.displayLabelsColumn = function() {
-    return localStorageService.get('display_labels_column') || false;
+    var value = localStorageService.get('display_labels_column');
+    return value !== null ? value : false;
   }
 
   configManager.setDisplayLabelsColumn = function(displayLabelsColumn) {
