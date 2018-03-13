@@ -15,12 +15,12 @@
   "dependencies": {
     "angular": "~1.5.0",
     "angular-local-storage": "^0.6.0",
-    "angular-moment": "^1.0.1",
+    "angular-moment": "^1.2.0",
     "angular-route": "~1.5.0",
     "angular-tooltips": "^1.2.2",
     "emojify.js": "^1.1.0",
     "favico.js": "^0.3.10",
     "foundation-sites": "~6.3.1",
-    "moment": "^2.18.1"
+    "moment": "^2.21.0"
   }
 }
