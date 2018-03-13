@@ -1,3 +1,10 @@
+## 2.0.1 - 2018/03/13
+
+* Fix potential security issue in moment.js < 2.19.3
+* Fix list order
+* Update screenshot
+* Fix typo
+
 ## 2.0.0 - 2017/08/29
 
 **Added**
