@@ -1,0 +1,6 @@
+version: "2"
+services:
+  node:
+    build: { context: . }
+    user: "node"
+    ports:   [ '3000:3000' ]
