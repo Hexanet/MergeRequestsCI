@@ -1,0 +1,7 @@
+{
+  "name": "MergeRequestsCI",
+  "description": "UI to see all GitLab merge requests of your teams in one place",
+  "repository": "https://github.com/Hexanet/MergeRequestsCI",
+  "logo": "https://raw.githubusercontent.com/Hexanet/MergeRequestsCI/master/app/assets/logo.png",
+  "keywords": ["gitlab"]
+}

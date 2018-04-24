@@ -4,6 +4,8 @@ UI to see all GitLab merge requests of your team in one place.
 
 ![MergeRequestsCI](screenshot.png)
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Requirements
 
 * [GitLab](https://about.gitlab.com/) >= 9.5
@@ -20,7 +22,7 @@ $ cd MergeRequestsCI
 ### Install dependencies
 
 ```shell
-$ make install
+$ npm install
 ```
 
 ## Run the server
@@ -28,7 +30,7 @@ $ make install
 After configuration, you have to build the code and launch the server.
 
 ```shell
-$ make serve
+$ npm run serve
 ```
 
 Then open `http://localhost:3000` in your browser.

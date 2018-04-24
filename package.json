@@ -3,13 +3,19 @@
   "version": "2.0.1",
   "private": true,
   "licence": "MIT",
+  "scripts": {
+    "serve": "node index.js",
+    "preserve": "brunch b --production",
+    "build": "brunch b --production",
+    "lint": "eslint.js --fix ./app/js"
+  },
   "devDependencies": {
     "assetsmanager-brunch": "^1.8.1",
     "brunch": "^2.10.0",
     "eslint": "^4.11.0",
     "eslint-brunch": "^3.12.0",
+    "express": "^4.16.3",
     "sass-brunch": "^2.10.0",
-    "serve": "^1.4.0",
     "uglify-js-brunch": "^2.10.0"
   },
   "dependencies": {
