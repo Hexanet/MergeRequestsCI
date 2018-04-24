@@ -12,5 +12,5 @@ cache:
   - node_modules
 
 script:
-  - make install
-  - make build
+  - npm install
+  - npm run build
