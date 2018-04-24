@@ -1,3 +1,7 @@
+## Next release
+
+* Add config to deploy with Heroku
+
 ## 2.0.1 - 2018/03/13
 
 * Fix potential security issue in moment.js < 2.19.3
