@@ -11,22 +11,22 @@
   },
   "devDependencies": {
     "assetsmanager-brunch": "^1.8.1",
-    "brunch": "^2.10.0",
-    "eslint": "^4.11.0",
+    "brunch": "^2.10.12",
+    "eslint": "^4.19.1",
     "eslint-brunch": "^3.12.0",
     "express": "^4.16.3",
     "sass-brunch": "^2.10.0",
     "uglify-js-brunch": "^2.10.0"
   },
   "dependencies": {
-    "angular": "~1.5.0",
-    "angular-local-storage": "^0.6.0",
+    "angular": "^1.7.2",
+    "angular-local-storage": "^0.7.1",
     "angular-moment": "^1.2.0",
-    "angular-route": "~1.5.0",
+    "angular-route": "^1.7.2",
     "angular-tooltips": "^1.2.2",
     "emojify.js": "^1.1.0",
     "favico.js": "^0.3.10",
     "foundation-sites": "~6.3.1",
-    "moment": "^2.21.0"
+    "moment": "^2.22.2"
   }
 }
